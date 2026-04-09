@@ -148,15 +148,34 @@ class APIClient {
     }
 
     /**
+     * Get authentication headers from localStorage
+     */
+    getAuthHeaders() {
+        const headers = {
+            'Content-Type': 'application/json'
+        };
+
+        try {
+            const user = JSON.parse(localStorage.getItem('user'));
+            if (user) {
+                headers['X-User-Id'] = user.userId;
+                headers['X-User-Role'] = user.role;
+            }
+        } catch (error) {
+            console.warn('Error reading user from localStorage:', error);
+        }
+
+        return headers;
+    }
+
+    /**
      * Helper method for GET requests
      */
     async getRequest(endpoint) {
         try {
             const response = await fetch(`${this.baseURL}${endpoint}`, {
                 method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
+                headers: this.getAuthHeaders()
             });
 
             if (!response.ok) {
@@ -177,9 +196,7 @@ class APIClient {
         try {
             const response = await fetch(`${this.baseURL}${endpoint}`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                headers: this.getAuthHeaders(),
                 body: JSON.stringify(data)
             });
 
@@ -201,9 +218,7 @@ class APIClient {
         try {
             const response = await fetch(`${this.baseURL}${endpoint}`, {
                 method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                headers: this.getAuthHeaders(),
                 body: JSON.stringify(data)
             });
 
@@ -225,9 +240,7 @@ class APIClient {
         try {
             const response = await fetch(`${this.baseURL}${endpoint}`, {
                 method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
+                headers: this.getAuthHeaders()
             });
 
             if (!response.ok) {
