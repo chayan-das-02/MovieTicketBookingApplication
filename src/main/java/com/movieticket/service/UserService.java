@@ -83,12 +83,6 @@ public class UserService {
     }
 
     private UserDTO convertToDTO(User user) {
-        return new UserDTO(
-            user.getUserId(),
-            user.getEmail(),
-            user.getFirstName(),
-            user.getLastName(),
-            user.getPhoneNumber()
-        );
+        return new UserDTO(user);  // Use the new constructor that handles role
     }
 }

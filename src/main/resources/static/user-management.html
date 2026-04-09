@@ -403,11 +403,11 @@
                 <tr>
                     <td>${user.firstName} ${user.lastName}</td>
                     <td>${user.email}</td>
-                    <td><span class="role-badge role-${user.role.toLowerCase()}">${user.role}</span></td>
+                    <td><span class="role-badge role-${(user.role || 'USER').toLowerCase()}">${user.role || 'USER'}</span></td>
                     <td>
                         <div class="action-buttons">
-                            <button class="btn-small btn-edit" onclick="editUser(${user.id})">Edit</button>
-                            <button class="btn-small btn-delete" onclick="deleteUser(${user.id})">Delete</button>
+                            <button class="btn-small btn-edit" onclick="editUser(${user.userId})">Edit</button>
+                            <button class="btn-small btn-delete" onclick="deleteUser(${user.userId})">Delete</button>
                         </div>
                     </td>
                 </tr>

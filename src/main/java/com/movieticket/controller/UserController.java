@@ -58,16 +58,21 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getAllUsers(@RequestHeader(value = "X-User-Role", required = false) String xUserRole) {
-        // Log for debugging
-        System.out.println("[DEBUG] GET /users called");
-        System.out.println("[DEBUG] X-User-Role header value: '" + xUserRole + "'");
-        System.out.println("[DEBUG] X-User-Role is null? " + (xUserRole == null));
-        System.out.println("[DEBUG] X-User-Role equals ADMIN? " + ("ADMIN".equals(xUserRole)));
+    public ResponseEntity<?> getAllUsers(@RequestHeader(value = "X-User-Role", required = false) String xUserRole,
+                                         @RequestHeader(value = "x-user-role", required = false) String xUserRoleLower) {
+        // Check both uppercase and lowercase variants
+        String role = xUserRole != null ? xUserRole : xUserRoleLower;
         
-        // TEMPORARY: Allow all access for debugging
-        System.out.println("[DEBUG] TEMPORARY: Allowing all access for testing");
+        System.out.println("[DEBUG] GET /users - X-User-Role: " + xUserRole + ", x-user-role: " + xUserRoleLower + ", final role: " + role);
         
+        // Check if user is admin
+        if (!"ADMIN".equals(role)) {
+            System.out.println("[DEBUG] Access denied - role is: " + role);
+            return ResponseEntity.status(403).body(new ErrorResponse(
+                "Access Denied",
+                "Only administrators can view all users. Role: " + role
+            ));
+        }
         List<UserDTO> users = userService.getAllUsers();
         return ResponseEntity.ok(users);
     }
