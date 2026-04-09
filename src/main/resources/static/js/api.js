@@ -237,6 +237,28 @@ class APIClient {
     }
 
     /**
+     * Helper method for PUT requests
+     */
+    async putRequest(endpoint, data) {
+        try {
+            const response = await fetch(`${this.baseURL}${endpoint}`, {
+                method: 'PUT',
+                headers: this.getAuthHeaders(),
+                body: JSON.stringify(data)
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            return await response.json();
+        } catch (error) {
+            console.error(`Error putting to ${endpoint}:`, error);
+            throw error;
+        }
+    }
+
+    /**
      * Helper method for PATCH requests
      */
     async patchRequest(endpoint, data) {
@@ -270,6 +292,11 @@ class APIClient {
 
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            // Handle 204 No Content - don't try to parse as JSON
+            if (response.status === 204) {
+                return;
             }
 
             return await response.json();
