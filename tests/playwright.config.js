@@ -18,13 +18,14 @@ export default defineConfig({
     trace: 'on-first-retry',
   },
 
-  webServer: {
-    // Uncomment if you want Playwright to start the server
-    // command: 'mvn spring-boot:run',
-    // port: 8080,
-    // timeout: 120 * 1000,
-    // reuseExistingServer: true,
-  },
+  // Note: Assumes Spring Boot server is already running on http://localhost:8080
+  // If you want Playwright to start the server, uncomment below:
+  // webServer: {
+  //   command: 'mvn spring-boot:run',
+  //   port: 8080,
+  //   timeout: 120 * 1000,
+  //   reuseExistingServer: true,
+  // },
 
   projects: [
     {
@@ -46,9 +47,10 @@ export default defineConfig({
   ],
 
   reporter: [
-    ['html', { outputFolder: 'test-results/html' }],
+    ['html'],
     ['json', { outputFile: 'test-results/results.json' }],
     ['junit', { outputFile: 'test-results/junit.xml' }],
     ['list'],
   ],
+  outputFolder: 'test-results',
 });
