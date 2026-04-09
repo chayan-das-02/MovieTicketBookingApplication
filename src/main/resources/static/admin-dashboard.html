@@ -260,83 +260,103 @@
             </div>
         </div>
 
-        <div class="dashboard-grid">
-            <div class="form-card">
-                <h2>➕ Add New Movie</h2>
-                <div id="addMovieMessage" class="message"></div>
-                <form id="addMovieForm">
-                    <div class="form-group">
-                        <label for="title">Movie Title *</label>
-                        <input type="text" id="title" name="title" required>
-                    </div>
+        <!-- Welcome Section -->
+        <div class="welcome-section" style="background: linear-gradient(135deg, var(--primary-color) 0%, var(--dark-color) 100%); color: white; padding: 2rem; border-radius: 10px; margin-bottom: 2rem; text-align: center;">
+            <h2 style="margin: 0; font-size: 1.5rem;">Welcome to Admin Dashboard</h2>
+            <p style="margin: 0.5rem 0 0 0;">Manage all aspects of your movie ticket booking system</p>
+        </div>
 
-                    <div class="form-group">
-                        <label for="description">Description *</label>
-                        <textarea id="description" name="description" required></textarea>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="genre">Genre *</label>
-                        <input type="text" id="genre" name="genre" required placeholder="Drama, Action, etc.">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="language">Language *</label>
-                        <input type="text" id="language" name="language" required placeholder="English, Hindi, etc.">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="director">Director *</label>
-                        <input type="text" id="director" name="director" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="durationMinutes">Duration (minutes) *</label>
-                        <input type="number" id="durationMinutes" name="durationMinutes" required min="1">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="rating">Rating *</label>
-                        <select id="rating" name="rating" required>
-                            <option value="">Select Rating</option>
-                            <option value="G">G</option>
-                            <option value="PG">PG</option>
-                            <option value="PG13">PG-13</option>
-                            <option value="R">R</option>
-                            <option value="NC17">NC-17</option>
-                        </select>
-                    </div>
-
-                    <button type="submit" class="btn-submit">Add Movie</button>
-                </form>
+        <!-- Statistics Cards -->
+        <div class="dashboard-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); margin-bottom: 2rem;">
+            <div class="stat-card" style="background: white; padding: 1.5rem; border-radius: 10px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                <h3 style="color: var(--primary-color); font-size: 2rem; margin: 0;">-</h3>
+                <p style="margin: 0.5rem 0 0 0; color: var(--dark-color);">Total Users</p>
+                <span id="totalUsers" style="font-size: 1.5rem; font-weight: bold; color: var(--primary-color);">0</span>
+            </div>
+            <div class="stat-card" style="background: white; padding: 1.5rem; border-radius: 10px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                <h3 style="color: var(--primary-color); font-size: 2rem; margin: 0;">🎬</h3>
+                <p style="margin: 0.5rem 0 0 0; color: var(--dark-color);">Total Movies</p>
+                <span id="totalMovies" style="font-size: 1.5rem; font-weight: bold; color: var(--primary-color);">0</span>
+            </div>
+            <div class="stat-card" style="background: white; padding: 1.5rem; border-radius: 10px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                <h3 style="color: var(--primary-color); font-size: 2rem; margin: 0;">🏢</h3>
+                <p style="margin: 0.5rem 0 0 0; color: var(--dark-color);">Total Theaters</p>
+                <span id="totalTheaters" style="font-size: 1.5rem; font-weight: bold; color: var(--primary-color);">0</span>
+            </div>
+            <div class="stat-card" style="background: white; padding: 1.5rem; border-radius: 10px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                <h3 style="color: var(--primary-color); font-size: 2rem; margin: 0;">🎫</h3>
+                <p style="margin: 0.5rem 0 0 0; color: var(--dark-color);">Total Bookings</p>
+                <span id="totalBookings" style="font-size: 1.5rem; font-weight: bold; color: var(--primary-color);">0</span>
             </div>
         </div>
 
-        <div class="movies-list">
-            <h2>📽️ Recently Added Movies</h2>
-            <div id="moviesContainer">
-                <p>Loading movies...</p>
-            </div>
-        </div>
+        <!-- Management Modules Grid -->
+        <div class="management-modules">
+            <h2 style="margin-bottom: 1.5rem; color: var(--dark-color);">📊 Management Modules</h2>
+            <div class="dashboard-grid">
+                <!-- User Management -->
+                <a href="user-management.html" style="text-decoration: none; color: inherit;">
+                    <div class="management-card" style="background: white; padding: 1.5rem; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); cursor: pointer; transition: transform 0.3s, box-shadow 0.3s; border-left: 5px solid #4CAF50;">
+                        <h3 style="margin: 0; color: #4CAF50; font-size: 1.3rem;">👥 User Management</h3>
+                        <p style="margin: 0.5rem 0 0 0; color: var(--dark-color);">Manage users and roles</p>
+                    </div>
+                </a>
 
-        <div class="movies-list" style="margin-top: 2rem;">
-            <h2>📊 Booking Statistics by User</h2>
-            <div style="overflow-x: auto;">
-                <table class="stats-table">
-                    <thead>
-                        <tr>
-                            <th>User Name</th>
-                            <th>Email</th>
-                            <th>Total Bookings</th>
-                            <th>Confirmed</th>
-                            <th>Pending</th>
-                            <th>Cancelled</th>
-                        </tr>
-                    </thead>
-                    <tbody id="statsContainer">
-                        <tr><td colspan="6" style="text-align: center;">Loading statistics...</td></tr>
-                    </tbody>
-                </table>
+                <!-- Movie Management -->
+                <a href="movie-management.html" style="text-decoration: none; color: inherit;">
+                    <div class="management-card" style="background: white; padding: 1.5rem; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); cursor: pointer; transition: transform 0.3s, box-shadow 0.3s; border-left: 5px solid #2196F3;">
+                        <h3 style="margin: 0; color: #2196F3; font-size: 1.3rem;">🎬 Movie Management</h3>
+                        <p style="margin: 0.5rem 0 0 0; color: var(--dark-color);">Add and manage movies</p>
+                    </div>
+                </a>
+
+                <!-- Theater Management -->
+                <a href="theater-management.html" style="text-decoration: none; color: inherit;">
+                    <div class="management-card" style="background: white; padding: 1.5rem; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); cursor: pointer; transition: transform 0.3s, box-shadow 0.3s; border-left: 5px solid #FF9800;">
+                        <h3 style="margin: 0; color: #FF9800; font-size: 1.3rem;">🏢 Theater Management</h3>
+                        <p style="margin: 0.5rem 0 0 0; color: var(--dark-color);">Manage theaters and locations</p>
+                    </div>
+                </a>
+
+                <!-- Screen Management -->
+                <a href="screen-management.html" style="text-decoration: none; color: inherit;">
+                    <div class="management-card" style="background: white; padding: 1.5rem; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); cursor: pointer; transition: transform 0.3s, box-shadow 0.3s; border-left: 5px solid #9C27B0;">
+                        <h3 style="margin: 0; color: #9C27B0; font-size: 1.3rem;">🎥 Screen Management</h3>
+                        <p style="margin: 0.5rem 0 0 0; color: var(--dark-color);">Configure screens and capacity</p>
+                    </div>
+                </a>
+
+                <!-- Show Management -->
+                <a href="show-management.html" style="text-decoration: none; color: inherit;">
+                    <div class="management-card" style="background: white; padding: 1.5rem; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); cursor: pointer; transition: transform 0.3s, box-shadow 0.3s; border-left: 5px solid #f44336;">
+                        <h3 style="margin: 0; color: #f44336; font-size: 1.3rem;">📅 Show Management</h3>
+                        <p style="margin: 0.5rem 0 0 0; color: var(--dark-color);">Schedule shows and pricing</p>
+                    </div>
+                </a>
+
+                <!-- Seat Management -->
+                <a href="seat-management.html" style="text-decoration: none; color: inherit;">
+                    <div class="management-card" style="background: white; padding: 1.5rem; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); cursor: pointer; transition: transform 0.3s, box-shadow 0.3s; border-left: 5px solid #00BCD4;">
+                        <h3 style="margin: 0; color: #00BCD4; font-size: 1.3rem;">💺 Seat Management</h3>
+                        <p style="margin: 0.5rem 0 0 0; color: var(--dark-color);">View theater seating</p>
+                    </div>
+                </a>
+
+                <!-- Booking Management -->
+                <a href="booking-management.html" style="text-decoration: none; color: inherit;">
+                    <div class="management-card" style="background: white; padding: 1.5rem; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); cursor: pointer; transition: transform 0.3s, box-shadow 0.3s; border-left: 5px solid #4CAF50;">
+                        <h3 style="margin: 0; color: #4CAF50; font-size: 1.3rem;">🎫 Booking Management</h3>
+                        <p style="margin: 0.5rem 0 0 0; color: var(--dark-color);">Track and manage bookings</p>
+                    </div>
+                </a>
+
+                <!-- Payment Management -->
+                <a href="payment-management.html" style="text-decoration: none; color: inherit;">
+                    <div class="management-card" style="background: white; padding: 1.5rem; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); cursor: pointer; transition: transform 0.3s, box-shadow 0.3s; border-left: 5px solid #E91E63;">
+                        <h3 style="margin: 0; color: #E91E63; font-size: 1.3rem;">💳 Payment Management</h3>
+                        <p style="margin: 0.5rem 0 0 0; color: var(--dark-color);">Track payments and revenue</p>
+                    </div>
+                </a>
             </div>
         </div>
     </div>
@@ -357,123 +377,53 @@
             document.getElementById('dashboardContent').style.display = 'block';
             document.getElementById('userName').textContent = user.firstName + ' ' + user.lastName;
 
-            // Load movies
-            loadMovies();
-
-            // Load statistics
-            loadStatistics();
-
-            // Handle form submission
-            document.getElementById('addMovieForm').addEventListener('submit', addMovie);
+            // Load dashboard statistics
+            loadDashboardStatistics();
         });
 
-        async function loadMovies() {
+        async function loadDashboardStatistics() {
             try {
-                const movies = await API.getMovies();
-                const container = document.getElementById('moviesContainer');
-
-                if (movies.length === 0) {
-                    container.innerHTML = '<p>No movies added yet</p>';
-                    return;
-                }
-
-                container.innerHTML = '';
-                movies.slice(-5).reverse().forEach(movie => {
-                    const movieDiv = `
-                        <div class="movie-item">
-                            <h3>${movie.title}</h3>
-                            <p><strong>Genre:</strong> ${movie.genre}</p>
-                            <p><strong>Director:</strong> ${movie.director}</p>
-                            <p><strong>Duration:</strong> ${movie.durationMinutes} mins</p>
-                            <p><strong>Rating:</strong> ${movie.rating} | <strong>Language:</strong> ${movie.language}</p>
-                        </div>
-                    `;
-                    container.innerHTML += movieDiv;
-                });
-            } catch (error) {
-                console.error('Error loading movies:', error);
-            }
-        }
-
-        async function addMovie(e) {
-            e.preventDefault();
-
-            const title = document.getElementById('title').value;
-            const description = document.getElementById('description').value;
-            const genre = document.getElementById('genre').value;
-            const language = document.getElementById('language').value;
-            const director = document.getElementById('director').value;
-            const durationMinutes = parseInt(document.getElementById('durationMinutes').value);
-            const rating = document.getElementById('rating').value;
-            const messageDiv = document.getElementById('addMovieMessage');
-
-            try {
-                const response = await fetch('/api/v1/movies', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        title,
-                        description,
-                        genre,
-                        language,
-                        director,
-                        durationMinutes,
-                        rating
+                // Load users count
+                fetch('/api/v1/users')
+                    .then(r => r.json())
+                    .then(users => {
+                        document.getElementById('totalUsers').textContent = Array.isArray(users) ? users.length : 0;
                     })
-                });
+                    .catch(() => {
+                        document.getElementById('totalUsers').textContent = '0';
+                    });
 
-                const data = await response.json();
+                // Load movies count
+                fetch('/api/v1/movies')
+                    .then(r => r.json())
+                    .then(movies => {
+                        document.getElementById('totalMovies').textContent = Array.isArray(movies) ? movies.length : 0;
+                    })
+                    .catch(() => {
+                        document.getElementById('totalMovies').textContent = '0';
+                    });
 
-                if (response.ok) {
-                    messageDiv.textContent = '✅ Movie added successfully!';
-                    messageDiv.className = 'message success';
-                    document.getElementById('addMovieForm').reset();
+                // Load theaters count
+                fetch('/api/v1/theaters')
+                    .then(r => r.json())
+                    .then(theaters => {
+                        document.getElementById('totalTheaters').textContent = Array.isArray(theaters) ? theaters.length : 0;
+                    })
+                    .catch(() => {
+                        document.getElementById('totalTheaters').textContent = '0';
+                    });
 
-                    // Reload movies after 1 second
-                    setTimeout(() => {
-                        loadMovies();
-                        messageDiv.style.display = 'none';
-                    }, 1500);
-                } else {
-                    messageDiv.textContent = '❌ Error: ' + (data.message || 'Failed to add movie');
-                    messageDiv.className = 'message error';
-                }
+                // Load bookings count
+                fetch('/api/v1/bookings')
+                    .then(r => r.json())
+                    .then(bookings => {
+                        document.getElementById('totalBookings').textContent = Array.isArray(bookings) ? bookings.length : 0;
+                    })
+                    .catch(() => {
+                        document.getElementById('totalBookings').textContent = '0';
+                    });
             } catch (error) {
-                messageDiv.textContent = '❌ Error: ' + error.message;
-                messageDiv.className = 'message error';
-            }
-        }
-
-        async function loadStatistics() {
-            try {
-                const stats = await fetch('/api/v1/bookings/stats/by-user').then(r => r.json());
-                const container = document.getElementById('statsContainer');
-
-                if (!stats || stats.length === 0) {
-                    container.innerHTML = '<tr><td colspan="6" style="text-align: center;">No booking data yet</td></tr>';
-                    return;
-                }
-
-                container.innerHTML = '';
-                stats.forEach(stat => {
-                    const row = `
-                        <tr>
-                            <td>${stat.userName}</td>
-                            <td>${stat.userEmail}</td>
-                            <td class="stat-number">${stat.totalBookings}</td>
-                            <td class="stat-confirmed">${stat.confirmedBookings}</td>
-                            <td class="stat-pending">${stat.pendingBookings}</td>
-                            <td class="stat-cancelled">${stat.cancelledBookings}</td>
-                        </tr>
-                    `;
-                    container.innerHTML += row;
-                });
-            } catch (error) {
-                console.error('Error loading statistics:', error);
-                document.getElementById('statsContainer').innerHTML = 
-                    '<tr><td colspan="6" style="color: red; text-align: center;">Error loading statistics</td></tr>';
+                console.error('Error loading dashboard statistics:', error);
             }
         }
 
