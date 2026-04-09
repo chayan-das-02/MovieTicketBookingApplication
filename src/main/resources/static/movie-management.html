@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Management - Admin</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .management-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .management-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            border-bottom: 3px solid var(--primary-color);
+            padding-bottom: 1rem;
+        }
+
+        .management-header h1 {
+            color: var(--primary-color);
+            margin: 0;
+        }
+
+        .back-button {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.6rem 1.2rem;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+
+        .back-button:hover {
+            background-color: #ff5252;
+            transform: translateY(-2px);
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .form-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            height: fit-content;
+        }
+
+        .form-card h2 {
+            color: var(--primary-color);
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid var(--border-color);
+            border-radius: 5px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.3s;
+            box-sizing: border-box;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 1rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-submit:hover {
+            background-color: #ff5252;
+            transform: translateY(-2px);
+        }
+
+        .message {
+            padding: 1rem;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .message.error {
+            background-color: #ffebee;
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+            display: block;
+        }
+
+        .message.success {
+            background-color: #e8f5e9;
+            color: var(--success-color);
+            border: 1px solid var(--success-color);
+            display: block;
+        }
+
+        .list-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .list-card h2 {
+            color: var(--primary-color);
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+        }
+
+        .movies-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .movie-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            transition: all 0.3s;
+        }
+
+        .movie-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .movie-card h3 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.1rem;
+        }
+
+        .movie-card p {
+            margin: 0.3rem 0;
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        .movie-card .movie-meta {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .movie-card .movie-meta p {
+            margin: 0.2rem 0;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .btn-small {
+            flex: 1;
+            padding: 0.5rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .btn-edit {
+            background-color: #2196F3;
+            color: white;
+        }
+
+        .btn-edit:hover {
+            background-color: #1976D2;
+        }
+
+        .btn-delete {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background-color: #da190b;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .search-box input {
+            flex: 1;
+            padding: 0.8rem;
+            border: 2px solid var(--border-color);
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .search-box button {
+            padding: 0.8rem 1.5rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .search-box button:hover {
+            background-color: #ff5252;
+        }
+
+        @media (max-width: 900px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .movies-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">🎬 MovieTickets</div>
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="admin-dashboard.html" class="nav-link active">Admin</a></li>
+                <li><a href="user-dashboard.html" class="nav-link">User</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div id="notAuthenticated" style="display: none; max-width: 1200px; margin: 3rem auto; padding: 2rem; background-color: #ffebee; border-radius: 10px; text-align: center; color: var(--primary-color);">
+        <h2>⛔ Access Denied</h2>
+        <p>You need to be logged in as an admin to access this page.</p>
+        <a href="login.html" style="color: var(--primary-color); font-weight: 600;">Go to Login</a>
+    </div>
+
+    <div id="managementContent" style="display: none;">
+        <div class="management-container">
+            <div class="management-header">
+                <h1>🎬 Movie Management</h1>
+                <a href="admin-dashboard.html" class="back-button">← Back to Dashboard</a>
+            </div>
+
+            <div class="content-grid">
+                <!-- Add/Edit Movie Form -->
+                <div class="form-card">
+                    <h2 id="formTitle">➕ Add New Movie</h2>
+                    <div id="movieMessage" class="message"></div>
+                    <form id="movieForm">
+                        <input type="hidden" id="movieId">
+                        
+                        <div class="form-group">
+                            <label for="title">Title *</label>
+                            <input type="text" id="title" name="title" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="description">Description *</label>
+                            <textarea id="description" name="description" required></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="genre">Genre *</label>
+                            <input type="text" id="genre" name="genre" required placeholder="Action, Drama, etc.">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="language">Language *</label>
+                            <input type="text" id="language" name="language" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="director">Director *</label>
+                            <input type="text" id="director" name="director" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="durationMinutes">Duration (minutes) *</label>
+                            <input type="number" id="durationMinutes" name="durationMinutes" required min="1">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="rating">Rating *</label>
+                            <select id="rating" name="rating" required>
+                                <option value="">Select Rating</option>
+                                <option value="G">G</option>
+                                <option value="PG">PG</option>
+                                <option value="PG13">PG-13</option>
+                                <option value="R">R</option>
+                                <option value="NC17">NC-17</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn-submit">Save Movie</button>
+                        <button type="button" class="btn-submit" onclick="resetForm()" style="background-color: #666; margin-top: 0.5rem;">Clear Form</button>
+                    </form>
+                </div>
+
+                <!-- Movies List -->
+                <div class="list-card">
+                    <h2>📽️ All Movies</h2>
+                    <div class="search-box">
+                        <input type="text" id="searchInput" placeholder="Search movies...">
+                        <button onclick="searchMovies()">Search</button>
+                    </div>
+                    <div class="movies-grid" id="moviesContainer">
+                        <p style="grid-column: 1/-1; text-align: center;">Loading movies...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/api.js"></script>
+    <script>
+        // Check authentication
+        document.addEventListener('DOMContentLoaded', () => {
+            const user = JSON.parse(localStorage.getItem('user'));
+
+            if (!user || user.role !== 'ADMIN') {
+                document.getElementById('notAuthenticated').style.display = 'block';
+                document.getElementById('managementContent').style.display = 'none';
+                return;
+            }
+
+            document.getElementById('notAuthenticated').style.display = 'none';
+            document.getElementById('managementContent').style.display = 'block';
+
+            loadMovies();
+            document.getElementById('movieForm').addEventListener('submit', saveMovie);
+        });
+
+        let allMovies = [];
+
+        async function loadMovies() {
+            try {
+                allMovies = await API.getMovies();
+                renderMoviesGrid(allMovies);
+            } catch (error) {
+                console.error('Error loading movies:', error);
+                showMessage('Error loading movies', 'error');
+            }
+        }
+
+        function renderMoviesGrid(movies) {
+            const container = document.getElementById('moviesContainer');
+            
+            if (!movies || movies.length === 0) {
+                container.innerHTML = '<p style="grid-column: 1/-1; text-align: center;">No movies found</p>';
+                return;
+            }
+
+            container.innerHTML = movies.map(movie => `
+                <div class="movie-card">
+                    <h3>${movie.title}</h3>
+                    <p><strong>Genre:</strong> ${movie.genre}</p>
+                    <p><strong>Language:</strong> ${movie.language}</p>
+                    <div class="movie-meta">
+                        <p><strong>Director:</strong> ${movie.director}</p>
+                        <p><strong>Duration:</strong> ${movie.durationMinutes} mins</p>
+                        <p><strong>Rating:</strong> ${movie.rating}</p>
+                    </div>
+                    <div class="action-buttons">
+                        <button class="btn-small btn-edit" onclick="editMovie(${movie.id})">Edit</button>
+                        <button class="btn-small btn-delete" onclick="deleteMovie(${movie.id})">Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function saveMovie(e) {
+            e.preventDefault();
+
+            const movieId = document.getElementById('movieId').value;
+            const title = document.getElementById('title').value;
+            const description = document.getElementById('description').value;
+            const genre = document.getElementById('genre').value;
+            const language = document.getElementById('language').value;
+            const director = document.getElementById('director').value;
+            const durationMinutes = parseInt(document.getElementById('durationMinutes').value);
+            const rating = document.getElementById('rating').value;
+
+            try {
+                let response;
+                if (movieId) {
+                    response = await fetch(`/api/v1/movies/${movieId}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ title, description, genre, language, director, durationMinutes, rating })
+                    });
+                } else {
+                    response = await fetch('/api/v1/movies', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ title, description, genre, language, director, durationMinutes, rating })
+                    });
+                }
+
+                if (response.ok) {
+                    showMessage(movieId ? '✅ Movie updated successfully!' : '✅ Movie created successfully!', 'success');
+                    resetForm();
+                    loadMovies();
+                } else {
+                    const error = await response.json();
+                    showMessage('❌ Error: ' + (error.message || 'Failed to save movie'), 'error');
+                }
+            } catch (error) {
+                showMessage('❌ Error: ' + error.message, 'error');
+            }
+        }
+
+        function editMovie(movieId) {
+            const movie = allMovies.find(m => m.id === movieId);
+            if (movie) {
+                document.getElementById('movieId').value = movie.id;
+                document.getElementById('title').value = movie.title;
+                document.getElementById('description').value = movie.description;
+                document.getElementById('genre').value = movie.genre;
+                document.getElementById('language').value = movie.language;
+                document.getElementById('director').value = movie.director;
+                document.getElementById('durationMinutes').value = movie.durationMinutes;
+                document.getElementById('rating').value = movie.rating;
+                document.getElementById('formTitle').textContent = '✏️ Edit Movie';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        async function deleteMovie(movieId) {
+            if (confirm('Are you sure you want to delete this movie?')) {
+                try {
+                    const response = await fetch(`/api/v1/movies/${movieId}`, {
+                        method: 'DELETE'
+                    });
+
+                    if (response.ok) {
+                        showMessage('✅ Movie deleted successfully!', 'success');
+                        loadMovies();
+                    } else {
+                        showMessage('❌ Error deleting movie', 'error');
+                    }
+                } catch (error) {
+                    showMessage('❌ Error: ' + error.message, 'error');
+                }
+            }
+        }
+
+        function resetForm() {
+            document.getElementById('movieForm').reset();
+            document.getElementById('movieId').value = '';
+            document.getElementById('formTitle').textContent = '➕ Add New Movie';
+        }
+
+        function showMessage(message, type) {
+            const messageDiv = document.getElementById('movieMessage');
+            messageDiv.textContent = message;
+            messageDiv.className = 'message ' + type;
+            setTimeout(() => {
+                messageDiv.style.display = 'none';
+            }, 4000);
+        }
+
+        function searchMovies() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = allMovies.filter(movie => 
+                movie.title.toLowerCase().includes(searchTerm) ||
+                movie.genre.toLowerCase().includes(searchTerm) ||
+                movie.director.toLowerCase().includes(searchTerm)
+            );
+            renderMoviesGrid(filtered);
+        }
+
+        document.getElementById('searchInput')?.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') searchMovies();
+        });
+    </script>
+</body>
+</html>

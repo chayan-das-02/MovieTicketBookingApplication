@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seat Management - Admin</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .management-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .management-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            border-bottom: 3px solid var(--primary-color);
+            padding-bottom: 1rem;
+        }
+
+        .management-header h1 {
+            color: var(--primary-color);
+            margin: 0;
+        }
+
+        .back-button {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.6rem 1.2rem;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+
+        .back-button:hover {
+            background-color: #ff5252;
+            transform: translateY(-2px);
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .form-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            height: fit-content;
+        }
+
+        .form-card h2 {
+            color: var(--primary-color);
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid var(--border-color);
+            border-radius: 5px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.3s;
+            box-sizing: border-box;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 1rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-submit:hover {
+            background-color: #ff5252;
+            transform: translateY(-2px);
+        }
+
+        .message {
+            padding: 1rem;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .message.error {
+            background-color: #ffebee;
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+            display: block;
+        }
+
+        .message.success {
+            background-color: #e8f5e9;
+            color: var(--success-color);
+            border: 1px solid var(--success-color);
+            display: block;
+        }
+
+        .list-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .list-card h2 {
+            color: var(--primary-color);
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+        }
+
+        .seats-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .seats-table thead {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .seats-table th {
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .seats-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .seats-table tbody tr:hover {
+            background-color: #f9f9f9;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-small {
+            padding: 0.5rem 0.8rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+        }
+
+        .btn-edit {
+            background-color: #2196F3;
+            color: white;
+        }
+
+        .btn-edit:hover {
+            background-color: #1976D2;
+        }
+
+        .btn-delete {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background-color: #da190b;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-available {
+            background-color: #e8f5e9;
+            color: var(--success-color);
+        }
+
+        .status-booked {
+            background-color: #ffebee;
+            color: var(--primary-color);
+        }
+
+        @media (max-width: 900px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">🎬 MovieTickets</div>
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="admin-dashboard.html" class="nav-link active">Admin</a></li>
+                <li><a href="user-dashboard.html" class="nav-link">User</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div id="notAuthenticated" style="display: none; max-width: 1200px; margin: 3rem auto; padding: 2rem; background-color: #ffebee; border-radius: 10px; text-align: center; color: var(--primary-color);">
+        <h2>⛔ Access Denied</h2>
+        <p>You need to be logged in as an admin to access this page.</p>
+        <a href="login.html" style="color: var(--primary-color); font-weight: 600;">Go to Login</a>
+    </div>
+
+    <div id="managementContent" style="display: none;">
+        <div class="management-container">
+            <div class="management-header">
+                <h1>💺 Seat Management</h1>
+                <a href="admin-dashboard.html" class="back-button">← Back to Dashboard</a>
+            </div>
+
+            <div class="content-grid">
+                <!-- Filter Form -->
+                <div class="form-card">
+                    <h2>🔍 Filter Seats</h2>
+                    <div id="seatMessage" class="message"></div>
+                    <form id="filterForm">
+                        <div class="form-group">
+                            <label for="showFilter">Select Show *</label>
+                            <select id="showFilter" name="showFilter" required onchange="filterSeats()">
+                                <option value="">Select Show</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Seats List -->
+                <div class="list-card">
+                    <h2>💺 Show Seats</h2>
+                    <div style="overflow-x: auto;">
+                        <table class="seats-table">
+                            <thead>
+                                <tr>
+                                    <th>Seat Number</th>
+                                    <th>Row</th>
+                                    <th>Column</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="seatsContainer">
+                                <tr><td colspan="4" style="text-align: center;">Select a show to view seats</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/api.js"></script>
+    <script>
+        // Check authentication
+        document.addEventListener('DOMContentLoaded', () => {
+            const user = JSON.parse(localStorage.getItem('user'));
+
+            if (!user || user.role !== 'ADMIN') {
+                document.getElementById('notAuthenticated').style.display = 'block';
+                document.getElementById('managementContent').style.display = 'none';
+                return;
+            }
+
+            document.getElementById('notAuthenticated').style.display = 'none';
+            document.getElementById('managementContent').style.display = 'block';
+
+            loadShows();
+        });
+
+        let allShows = [];
+
+        async function loadShows() {
+            try {
+                allShows = await API.getShows();
+                const select = document.getElementById('showFilter');
+                allShows.forEach(show => {
+                    const option = document.createElement('option');
+                    option.value = show.id;
+                    option.textContent = `${show.movie?.title} - ${new Date(show.showTime).toLocaleString()}`;
+                    select.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Error loading shows:', error);
+                showMessage('Error loading shows', 'error');
+            }
+        }
+
+        async function filterSeats() {
+            const showId = document.getElementById('showFilter').value;
+            if (!showId) return;
+
+            try {
+                const seats = await API.getSeatsForShow(showId);
+                renderSeatsTable(seats);
+            } catch (error) {
+                console.error('Error loading seats:', error);
+                showMessage('Error loading seats', 'error');
+            }
+        }
+
+        function renderSeatsTable(seats) {
+            const container = document.getElementById('seatsContainer');
+            
+            if (!seats || seats.length === 0) {
+                container.innerHTML = '<tr><td colspan="4" style="text-align: center;">No seats found</td></tr>';
+                return;
+            }
+
+            container.innerHTML = seats.map(seat => `
+                <tr>
+                    <td>${seat.seatNumber}</td>
+                    <td>${seat.row}</td>
+                    <td>${seat.column}</td>
+                    <td><span class="status-badge status-${seat.status?.toLowerCase() || 'available'}">${seat.status || 'AVAILABLE'}</span></td>
+                </tr>
+            `).join('');
+        }
+
+        function showMessage(message, type) {
+            const messageDiv = document.getElementById('seatMessage');
+            messageDiv.textContent = message;
+            messageDiv.className = 'message ' + type;
+            setTimeout(() => {
+                messageDiv.style.display = 'none';
+            }, 4000);
+        }
+    </script>
+</body>
+</html>

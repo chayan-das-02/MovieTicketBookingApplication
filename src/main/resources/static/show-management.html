@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Show Management - Admin</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .management-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .management-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            border-bottom: 3px solid var(--primary-color);
+            padding-bottom: 1rem;
+        }
+
+        .management-header h1 {
+            color: var(--primary-color);
+            margin: 0;
+        }
+
+        .back-button {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.6rem 1.2rem;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+
+        .back-button:hover {
+            background-color: #ff5252;
+            transform: translateY(-2px);
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .form-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            height: fit-content;
+        }
+
+        .form-card h2 {
+            color: var(--primary-color);
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid var(--border-color);
+            border-radius: 5px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.3s;
+            box-sizing: border-box;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 1rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-submit:hover {
+            background-color: #ff5252;
+            transform: translateY(-2px);
+        }
+
+        .message {
+            padding: 1rem;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .message.error {
+            background-color: #ffebee;
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+            display: block;
+        }
+
+        .message.success {
+            background-color: #e8f5e9;
+            color: var(--success-color);
+            border: 1px solid var(--success-color);
+            display: block;
+        }
+
+        .list-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .list-card h2 {
+            color: var(--primary-color);
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+        }
+
+        .shows-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .shows-table thead {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .shows-table th {
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .shows-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .shows-table tbody tr:hover {
+            background-color: #f9f9f9;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-small {
+            padding: 0.5rem 0.8rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+        }
+
+        .btn-edit {
+            background-color: #2196F3;
+            color: white;
+        }
+
+        .btn-edit:hover {
+            background-color: #1976D2;
+        }
+
+        .btn-delete {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background-color: #da190b;
+        }
+
+        @media (max-width: 900px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">🎬 MovieTickets</div>
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="admin-dashboard.html" class="nav-link active">Admin</a></li>
+                <li><a href="user-dashboard.html" class="nav-link">User</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div id="notAuthenticated" style="display: none; max-width: 1200px; margin: 3rem auto; padding: 2rem; background-color: #ffebee; border-radius: 10px; text-align: center; color: var(--primary-color);">
+        <h2>⛔ Access Denied</h2>
+        <p>You need to be logged in as an admin to access this page.</p>
+        <a href="login.html" style="color: var(--primary-color); font-weight: 600;">Go to Login</a>
+    </div>
+
+    <div id="managementContent" style="display: none;">
+        <div class="management-container">
+            <div class="management-header">
+                <h1>🎞️ Show Management</h1>
+                <a href="admin-dashboard.html" class="back-button">← Back to Dashboard</a>
+            </div>
+
+            <div class="content-grid">
+                <!-- Add/Edit Show Form -->
+                <div class="form-card">
+                    <h2 id="formTitle">➕ Add New Show</h2>
+                    <div id="showMessage" class="message"></div>
+                    <form id="showForm">
+                        <input type="hidden" id="showId">
+                        
+                        <div class="form-group">
+                            <label for="movie">Movie *</label>
+                            <select id="movie" name="movie" required>
+                                <option value="">Select Movie</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="screen">Screen *</label>
+                            <select id="screen" name="screen" required>
+                                <option value="">Select Screen</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="showTime">Show Time *</label>
+                            <input type="datetime-local" id="showTime" name="showTime" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="ticketPrice">Ticket Price *</label>
+                            <input type="number" id="ticketPrice" name="ticketPrice" required min="0" step="0.01">
+                        </div>
+
+                        <button type="submit" class="btn-submit">Save Show</button>
+                        <button type="button" class="btn-submit" onclick="resetForm()" style="background-color: #666; margin-top: 0.5rem;">Clear Form</button>
+                    </form>
+                </div>
+
+                <!-- Shows List -->
+                <div class="list-card">
+                    <h2>🎞️ All Shows</h2>
+                    <div style="overflow-x: auto;">
+                        <table class="shows-table">
+                            <thead>
+                                <tr>
+                                    <th>Movie</th>
+                                    <th>Screen</th>
+                                    <th>Show Time</th>
+                                    <th>Price</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="showsContainer">
+                                <tr><td colspan="5" style="text-align: center;">Loading shows...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/api.js"></script>
+    <script>
+        // Check authentication
+        document.addEventListener('DOMContentLoaded', () => {
+            const user = JSON.parse(localStorage.getItem('user'));
+
+            if (!user || user.role !== 'ADMIN') {
+                document.getElementById('notAuthenticated').style.display = 'block';
+                document.getElementById('managementContent').style.display = 'none';
+                return;
+            }
+
+            document.getElementById('notAuthenticated').style.display = 'none';
+            document.getElementById('managementContent').style.display = 'block';
+
+            loadMovies();
+            loadScreens();
+            loadShows();
+            document.getElementById('showForm').addEventListener('submit', saveShow);
+        });
+
+        let allShows = [];
+
+        async function loadMovies() {
+            try {
+                const movies = await API.getMovies();
+                const select = document.getElementById('movie');
+                movies.forEach(movie => {
+                    const option = document.createElement('option');
+                    option.value = movie.id;
+                    option.textContent = movie.title;
+                    select.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Error loading movies:', error);
+            }
+        }
+
+        async function loadScreens() {
+            try {
+                const screens = await API.getScreens();
+                const select = document.getElementById('screen');
+                screens.forEach(screen => {
+                    const option = document.createElement('option');
+                    option.value = screen.id;
+                    option.textContent = `${screen.theater?.name} - Screen ${screen.screenNumber}`;
+                    select.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Error loading screens:', error);
+            }
+        }
+
+        async function loadShows() {
+            try {
+                allShows = await API.getShows();
+                renderShowsTable(allShows);
+            } catch (error) {
+                console.error('Error loading shows:', error);
+                showMessage('Error loading shows', 'error');
+            }
+        }
+
+        function renderShowsTable(shows) {
+            const container = document.getElementById('showsContainer');
+            
+            if (!shows || shows.length === 0) {
+                container.innerHTML = '<tr><td colspan="5" style="text-align: center;">No shows found</td></tr>';
+                return;
+            }
+
+            container.innerHTML = shows.map(show => `
+                <tr>
+                    <td>${show.movie?.title || 'N/A'}</td>
+                    <td>Screen ${show.screen?.screenNumber || 'N/A'}</td>
+                    <td>${new Date(show.showTime).toLocaleString()}</td>
+                    <td>$${show.ticketPrice.toFixed(2)}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn-small btn-edit" onclick="editShow(${show.id})">Edit</button>
+                            <button class="btn-small btn-delete" onclick="deleteShow(${show.id})">Delete</button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        async function saveShow(e) {
+            e.preventDefault();
+
+            const showId = document.getElementById('showId').value;
+            const movieId = document.getElementById('movie').value;
+            const screenId = document.getElementById('screen').value;
+            const showTime = document.getElementById('showTime').value;
+            const ticketPrice = parseFloat(document.getElementById('ticketPrice').value);
+
+            try {
+                let response;
+                if (showId) {
+                    response = await fetch(`/api/v1/shows/${showId}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ movieId, screenId, showTime, ticketPrice })
+                    });
+                } else {
+                    response = await fetch('/api/v1/shows', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ movieId, screenId, showTime, ticketPrice })
+                    });
+                }
+
+                if (response.ok) {
+                    showMessage(showId ? '✅ Show updated successfully!' : '✅ Show created successfully!', 'success');
+                    resetForm();
+                    loadShows();
+                } else {
+                    const error = await response.json();
+                    showMessage('❌ Error: ' + (error.message || 'Failed to save show'), 'error');
+                }
+            } catch (error) {
+                showMessage('❌ Error: ' + error.message, 'error');
+            }
+        }
+
+        function editShow(showId) {
+            const show = allShows.find(s => s.id === showId);
+            if (show) {
+                document.getElementById('showId').value = show.id;
+                document.getElementById('movie').value = show.movie?.id || '';
+                document.getElementById('screen').value = show.screen?.id || '';
+                document.getElementById('showTime').value = show.showTime.slice(0, 16);
+                document.getElementById('ticketPrice').value = show.ticketPrice;
+                document.getElementById('formTitle').textContent = '✏️ Edit Show';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        async function deleteShow(showId) {
+            if (confirm('Are you sure you want to delete this show?')) {
+                try {
+                    const response = await fetch(`/api/v1/shows/${showId}`, {
+                        method: 'DELETE'
+                    });
+
+                    if (response.ok) {
+                        showMessage('✅ Show deleted successfully!', 'success');
+                        loadShows();
+                    } else {
+                        showMessage('❌ Error deleting show', 'error');
+                    }
+                } catch (error) {
+                    showMessage('❌ Error: ' + error.message, 'error');
+                }
+            }
+        }
+
+        function resetForm() {
+            document.getElementById('showForm').reset();
+            document.getElementById('showId').value = '';
+            document.getElementById('formTitle').textContent = '➕ Add New Show';
+        }
+
+        function showMessage(message, type) {
+            const messageDiv = document.getElementById('showMessage');
+            messageDiv.textContent = message;
+            messageDiv.className = 'message ' + type;
+            setTimeout(() => {
+                messageDiv.style.display = 'none';
+            }, 4000);
+        }
+    </script>
+</body>
+</html>

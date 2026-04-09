@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Screen Management - Admin</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .management-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .management-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            border-bottom: 3px solid var(--primary-color);
+            padding-bottom: 1rem;
+        }
+
+        .management-header h1 {
+            color: var(--primary-color);
+            margin: 0;
+        }
+
+        .back-button {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.6rem 1.2rem;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+
+        .back-button:hover {
+            background-color: #ff5252;
+            transform: translateY(-2px);
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .form-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            height: fit-content;
+        }
+
+        .form-card h2 {
+            color: var(--primary-color);
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid var(--border-color);
+            border-radius: 5px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.3s;
+            box-sizing: border-box;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 1rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-submit:hover {
+            background-color: #ff5252;
+            transform: translateY(-2px);
+        }
+
+        .message {
+            padding: 1rem;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .message.error {
+            background-color: #ffebee;
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+            display: block;
+        }
+
+        .message.success {
+            background-color: #e8f5e9;
+            color: var(--success-color);
+            border: 1px solid var(--success-color);
+            display: block;
+        }
+
+        .list-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .list-card h2 {
+            color: var(--primary-color);
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+        }
+
+        .screens-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .screens-table thead {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .screens-table th {
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .screens-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .screens-table tbody tr:hover {
+            background-color: #f9f9f9;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-small {
+            padding: 0.5rem 0.8rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+        }
+
+        .btn-edit {
+            background-color: #2196F3;
+            color: white;
+        }
+
+        .btn-edit:hover {
+            background-color: #1976D2;
+        }
+
+        .btn-delete {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background-color: #da190b;
+        }
+
+        @media (max-width: 900px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">🎬 MovieTickets</div>
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="admin-dashboard.html" class="nav-link active">Admin</a></li>
+                <li><a href="user-dashboard.html" class="nav-link">User</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div id="notAuthenticated" style="display: none; max-width: 1200px; margin: 3rem auto; padding: 2rem; background-color: #ffebee; border-radius: 10px; text-align: center; color: var(--primary-color);">
+        <h2>⛔ Access Denied</h2>
+        <p>You need to be logged in as an admin to access this page.</p>
+        <a href="login.html" style="color: var(--primary-color); font-weight: 600;">Go to Login</a>
+    </div>
+
+    <div id="managementContent" style="display: none;">
+        <div class="management-container">
+            <div class="management-header">
+                <h1>📺 Screen Management</h1>
+                <a href="admin-dashboard.html" class="back-button">← Back to Dashboard</a>
+            </div>
+
+            <div class="content-grid">
+                <!-- Add/Edit Screen Form -->
+                <div class="form-card">
+                    <h2 id="formTitle">➕ Add New Screen</h2>
+                    <div id="screenMessage" class="message"></div>
+                    <form id="screenForm">
+                        <input type="hidden" id="screenId">
+                        
+                        <div class="form-group">
+                            <label for="screenNumber">Screen Number *</label>
+                            <input type="text" id="screenNumber" name="screenNumber" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="theater">Theater *</label>
+                            <select id="theater" name="theater" required>
+                                <option value="">Select Theater</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="screenType">Screen Type *</label>
+                            <select id="screenType" name="screenType" required>
+                                <option value="">Select Type</option>
+                                <option value="2D">2D</option>
+                                <option value="3D">3D</option>
+                                <option value="IMAX">IMAX</option>
+                                <option value="4DX">4DX</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="totalSeats">Total Seats *</label>
+                            <input type="number" id="totalSeats" name="totalSeats" required min="1">
+                        </div>
+
+                        <button type="submit" class="btn-submit">Save Screen</button>
+                        <button type="button" class="btn-submit" onclick="resetForm()" style="background-color: #666; margin-top: 0.5rem;">Clear Form</button>
+                    </form>
+                </div>
+
+                <!-- Screens List -->
+                <div class="list-card">
+                    <h2>📺 All Screens</h2>
+                    <div style="overflow-x: auto;">
+                        <table class="screens-table">
+                            <thead>
+                                <tr>
+                                    <th>Screen Number</th>
+                                    <th>Theater</th>
+                                    <th>Type</th>
+                                    <th>Total Seats</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="screensContainer">
+                                <tr><td colspan="5" style="text-align: center;">Loading screens...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/api.js"></script>
+    <script>
+        // Check authentication
+        document.addEventListener('DOMContentLoaded', () => {
+            const user = JSON.parse(localStorage.getItem('user'));
+
+            if (!user || user.role !== 'ADMIN') {
+                document.getElementById('notAuthenticated').style.display = 'block';
+                document.getElementById('managementContent').style.display = 'none';
+                return;
+            }
+
+            document.getElementById('notAuthenticated').style.display = 'none';
+            document.getElementById('managementContent').style.display = 'block';
+
+            loadTheaters();
+            loadScreens();
+            document.getElementById('screenForm').addEventListener('submit', saveScreen);
+        });
+
+        let allScreens = [];
+
+        async function loadTheaters() {
+            try {
+                const theaters = await API.getTheaters();
+                const select = document.getElementById('theater');
+                theaters.forEach(theater => {
+                    const option = document.createElement('option');
+                    option.value = theater.id;
+                    option.textContent = theater.name;
+                    select.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Error loading theaters:', error);
+            }
+        }
+
+        async function loadScreens() {
+            try {
+                allScreens = await API.getScreens();
+                renderScreensTable(allScreens);
+            } catch (error) {
+                console.error('Error loading screens:', error);
+                showMessage('Error loading screens', 'error');
+            }
+        }
+
+        function renderScreensTable(screens) {
+            const container = document.getElementById('screensContainer');
+            
+            if (!screens || screens.length === 0) {
+                container.innerHTML = '<tr><td colspan="5" style="text-align: center;">No screens found</td></tr>';
+                return;
+            }
+
+            container.innerHTML = screens.map(screen => `
+                <tr>
+                    <td>${screen.screenNumber}</td>
+                    <td>${screen.theater?.name || 'N/A'}</td>
+                    <td>${screen.screenType}</td>
+                    <td>${screen.totalSeats}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn-small btn-edit" onclick="editScreen(${screen.id})">Edit</button>
+                            <button class="btn-small btn-delete" onclick="deleteScreen(${screen.id})">Delete</button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        async function saveScreen(e) {
+            e.preventDefault();
+
+            const screenId = document.getElementById('screenId').value;
+            const screenNumber = document.getElementById('screenNumber').value;
+            const theaterId = document.getElementById('theater').value;
+            const screenType = document.getElementById('screenType').value;
+            const totalSeats = parseInt(document.getElementById('totalSeats').value);
+
+            try {
+                let response;
+                if (screenId) {
+                    response = await fetch(`/api/v1/screens/${screenId}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ screenNumber, theaterId, screenType, totalSeats })
+                    });
+                } else {
+                    response = await fetch('/api/v1/screens', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ screenNumber, theaterId, screenType, totalSeats })
+                    });
+                }
+
+                if (response.ok) {
+                    showMessage(screenId ? '✅ Screen updated successfully!' : '✅ Screen created successfully!', 'success');
+                    resetForm();
+                    loadScreens();
+                } else {
+                    const error = await response.json();
+                    showMessage('❌ Error: ' + (error.message || 'Failed to save screen'), 'error');
+                }
+            } catch (error) {
+                showMessage('❌ Error: ' + error.message, 'error');
+            }
+        }
+
+        function editScreen(screenId) {
+            const screen = allScreens.find(s => s.id === screenId);
+            if (screen) {
+                document.getElementById('screenId').value = screen.id;
+                document.getElementById('screenNumber').value = screen.screenNumber;
+                document.getElementById('theater').value = screen.theater?.id || '';
+                document.getElementById('screenType').value = screen.screenType;
+                document.getElementById('totalSeats').value = screen.totalSeats;
+                document.getElementById('formTitle').textContent = '✏️ Edit Screen';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        async function deleteScreen(screenId) {
+            if (confirm('Are you sure you want to delete this screen?')) {
+                try {
+                    const response = await fetch(`/api/v1/screens/${screenId}`, {
+                        method: 'DELETE'
+                    });
+
+                    if (response.ok) {
+                        showMessage('✅ Screen deleted successfully!', 'success');
+                        loadScreens();
+                    } else {
+                        showMessage('❌ Error deleting screen', 'error');
+                    }
+                } catch (error) {
+                    showMessage('❌ Error: ' + error.message, 'error');
+                }
+            }
+        }
+
+        function resetForm() {
+            document.getElementById('screenForm').reset();
+            document.getElementById('screenId').value = '';
+            document.getElementById('formTitle').textContent = '➕ Add New Screen';
+        }
+
+        function showMessage(message, type) {
+            const messageDiv = document.getElementById('screenMessage');
+            messageDiv.textContent = message;
+            messageDiv.className = 'message ' + type;
+            setTimeout(() => {
+                messageDiv.style.display = 'none';
+            }, 4000);
+        }
+    </script>
+</body>
+</html>

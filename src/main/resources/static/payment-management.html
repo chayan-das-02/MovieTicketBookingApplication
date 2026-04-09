@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Management - Admin</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .management-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .management-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            border-bottom: 3px solid var(--primary-color);
+            padding-bottom: 1rem;
+        }
+
+        .management-header h1 {
+            color: var(--primary-color);
+            margin: 0;
+        }
+
+        .back-button {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.6rem 1.2rem;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+
+        .back-button:hover {
+            background-color: #ff5252;
+            transform: translateY(-2px);
+        }
+
+        .stats-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .stat-card .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin: 0;
+        }
+
+        .stat-card .stat-label {
+            color: #666;
+            margin: 0.5rem 0 0 0;
+        }
+
+        .filters-section {
+            background-color: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+
+        .form-group select,
+        .form-group input {
+            padding: 0.8rem;
+            border: 2px solid var(--border-color);
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-group select:focus,
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn-filter {
+            padding: 0.8rem 1.5rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-filter:hover {
+            background-color: #ff5252;
+            transform: translateY(-2px);
+        }
+
+        .btn-clear {
+            padding: 0.8rem 1.5rem;
+            background-color: #666;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .btn-clear:hover {
+            background-color: #555;
+        }
+
+        .list-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .list-card h2 {
+            color: var(--primary-color);
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+        }
+
+        .payments-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .payments-table thead {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .payments-table th {
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .payments-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .payments-table tbody tr:hover {
+            background-color: #f9f9f9;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.4rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-success {
+            background-color: #e8f5e9;
+            color: var(--success-color);
+        }
+
+        .status-pending {
+            background-color: #fff3e0;
+            color: #ff9800;
+        }
+
+        .status-failed {
+            background-color: #ffebee;
+            color: var(--primary-color);
+        }
+
+        @media (max-width: 900px) {
+            .filters-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .filter-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">🎬 MovieTickets</div>
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="admin-dashboard.html" class="nav-link active">Admin</a></li>
+                <li><a href="user-dashboard.html" class="nav-link">User</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div id="notAuthenticated" style="display: none; max-width: 1200px; margin: 3rem auto; padding: 2rem; background-color: #ffebee; border-radius: 10px; text-align: center; color: var(--primary-color);">
+        <h2>⛔ Access Denied</h2>
+        <p>You need to be logged in as an admin to access this page.</p>
+        <a href="login.html" style="color: var(--primary-color); font-weight: 600;">Go to Login</a>
+    </div>
+
+    <div id="managementContent" style="display: none;">
+        <div class="management-container">
+            <div class="management-header">
+                <h1>💳 Payment Management</h1>
+                <a href="admin-dashboard.html" class="back-button">← Back to Dashboard</a>
+            </div>
+
+            <!-- Statistics Section -->
+            <div class="stats-section">
+                <div class="stat-card">
+                    <p class="stat-number" id="totalPayments">0</p>
+                    <p class="stat-label">Total Payments</p>
+                </div>
+                <div class="stat-card">
+                    <p class="stat-number" id="successfulPayments">0</p>
+                    <p class="stat-label">Successful Payments</p>
+                </div>
+                <div class="stat-card">
+                    <p class="stat-number" id="totalRevenue">$0</p>
+                    <p class="stat-label">Total Revenue</p>
+                </div>
+                <div class="stat-card">
+                    <p class="stat-number" id="failedPayments">0</p>
+                    <p class="stat-label">Failed Payments</p>
+                </div>
+            </div>
+
+            <!-- Filters Section -->
+            <div class="filters-section">
+                <h3 style="color: var(--primary-color); margin-top: 0;">🔍 Filter Payments</h3>
+                <div class="filters-grid">
+                    <div class="form-group">
+                        <label for="statusFilter">Status</label>
+                        <select id="statusFilter">
+                            <option value="">All Statuses</option>
+                            <option value="SUCCESS">Success</option>
+                            <option value="PENDING">Pending</option>
+                            <option value="FAILED">Failed</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="filter-buttons">
+                    <button class="btn-filter" onclick="filterPayments()">Apply Filter</button>
+                    <button class="btn-clear" onclick="clearFilters()">Clear Filters</button>
+                </div>
+            </div>
+
+            <!-- Payments List -->
+            <div class="list-card">
+                <h2>💳 All Payments</h2>
+                <div style="overflow-x: auto;">
+                    <table class="payments-table">
+                        <thead>
+                            <tr>
+                                <th>Payment ID</th>
+                                <th>User</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Payment Date</th>
+                            </tr>
+                        </thead>
+                        <tbody id="paymentsContainer">
+                            <tr><td colspan="5" style="text-align: center;">Loading payments...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/api.js"></script>
+    <script>
+        // Check authentication
+        document.addEventListener('DOMContentLoaded', () => {
+            const user = JSON.parse(localStorage.getItem('user'));
+
+            if (!user || user.role !== 'ADMIN') {
+                document.getElementById('notAuthenticated').style.display = 'block';
+                document.getElementById('managementContent').style.display = 'none';
+                return;
+            }
+
+            document.getElementById('notAuthenticated').style.display = 'none';
+            document.getElementById('managementContent').style.display = 'block';
+
+            loadPayments();
+        });
+
+        let allPayments = [];
+
+        async function loadPayments() {
+            try {
+                const response = await fetch('/api/v1/payments');
+                allPayments = await response.json();
+                renderPaymentsTable(allPayments);
+                updateStatistics();
+            } catch (error) {
+                console.error('Error loading payments:', error);
+                document.getElementById('paymentsContainer').innerHTML = 
+                    '<tr><td colspan="5" style="text-align: center; color: red;">Error loading payments</td></tr>';
+            }
+        }
+
+        function renderPaymentsTable(payments) {
+            const container = document.getElementById('paymentsContainer');
+            
+            if (!payments || payments.length === 0) {
+                container.innerHTML = '<tr><td colspan="5" style="text-align: center;">No payments found</td></tr>';
+                return;
+            }
+
+            container.innerHTML = payments.map(payment => `
+                <tr>
+                    <td>#${payment.id}</td>
+                    <td>${payment.booking?.user?.firstName} ${payment.booking?.user?.lastName}</td>
+                    <td>$${payment.amount?.toFixed(2) || '0.00'}</td>
+                    <td><span class="status-badge status-${payment.status?.toLowerCase()}">${payment.status}</span></td>
+                    <td>${new Date(payment.paymentDate).toLocaleString()}</td>
+                </tr>
+            `).join('');
+        }
+
+        function updateStatistics() {
+            const totalPayments = allPayments.length;
+            const successfulPayments = allPayments.filter(p => p.status === 'SUCCESS').length;
+            const failedPayments = allPayments.filter(p => p.status === 'FAILED').length;
+            const totalRevenue = allPayments
+                .filter(p => p.status === 'SUCCESS')
+                .reduce((sum, p) => sum + (p.amount || 0), 0);
+
+            document.getElementById('totalPayments').textContent = totalPayments;
+            document.getElementById('successfulPayments').textContent = successfulPayments;
+            document.getElementById('failedPayments').textContent = failedPayments;
+            document.getElementById('totalRevenue').textContent = '$' + totalRevenue.toFixed(2);
+        }
+
+        function filterPayments() {
+            const status = document.getElementById('statusFilter').value;
+            const filtered = status ? 
+                allPayments.filter(p => p.status === status) : 
+                allPayments;
+            renderPaymentsTable(filtered);
+        }
+
+        function clearFilters() {
+            document.getElementById('statusFilter').value = '';
+            renderPaymentsTable(allPayments);
+        }
+    </script>
+</body>
+</html>
