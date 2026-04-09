@@ -1,0 +1,20 @@
+{
+  "name": "movie-ticket-admin-tests",
+  "version": "1.0.0",
+  "description": "Automated tests for Movie Ticket Admin Dashboard Management Pages",
+  "main": "tests/admin-dashboard.test.js",
+  "scripts": {
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:debug": "playwright test --debug",
+    "test:ui": "playwright test --ui",
+    "report": "playwright show-report"
+  },
+  "keywords": ["playwright", "testing", "admin", "dashboard"],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@playwright/test": "^1.40.0"
+  },
+  "dependencies": {}
+}
