@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - MovieTickets</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 1rem;
+        }
+
+        .dashboard-header h1 {
+            color: var(--primary-color);
+        }
+
+        .user-info {
+            text-align: right;
+        }
+
+        .user-info p {
+            margin: 0.25rem 0;
+        }
+
+        .logout-btn {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 0.5rem;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .form-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .form-card h2 {
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid var(--border-color);
+            border-radius: 5px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 1rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-submit:hover {
+            background-color: #ff5252;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
+        }
+
+        .message {
+            padding: 1rem;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .message.error {
+            background-color: #ffebee;
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+            display: block;
+        }
+
+        .message.success {
+            background-color: #e8f5e9;
+            color: var(--success-color);
+            border: 1px solid var(--success-color);
+            display: block;
+        }
+
+        .movies-list {
+            background-color: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .movies-list h2 {
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+        }
+
+        .movie-item {
+            padding: 1.5rem;
+            border-left: 4px solid var(--primary-color);
+            background-color: #f9f9f9;
+            margin-bottom: 1rem;
+            border-radius: 5px;
+        }
+
+        .movie-item h3 {
+            margin: 0 0 0.5rem 0;
+            color: var(--dark-color);
+        }
+
+        .movie-item p {
+            margin: 0.25rem 0;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .not-authenticated {
+            text-align: center;
+            padding: 3rem;
+            background-color: #ffebee;
+            border-radius: 10px;
+            color: var(--primary-color);
+        }
+
+        .not-authenticated a {
+            color: var(--primary-color);
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .stats-table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+            margin-top: 1rem;
+        }
+
+        .stats-table thead {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .stats-table th {
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .stats-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .stats-table tbody tr:hover {
+            background-color: #f9f9f9;
+        }
+
+        .stat-number {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--primary-color);
+        }
+
+        .stat-confirmed {
+            color: var(--success-color);
+            font-weight: 600;
+        }
+
+        .stat-pending {
+            color: #ff9800;
+            font-weight: 600;
+        }
+
+        .stat-cancelled {
+            color: #999;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">🎬 MovieTickets</div>
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="admin-dashboard.html" class="nav-link active">Admin</a></li>
+                <li><a href="user-dashboard.html" class="nav-link">User</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div id="notAuthenticated" class="not-authenticated" style="display: none;">
+        <h2>⛔ Access Denied</h2>
+        <p>You need to be logged in as an admin to access this page.</p>
+        <a href="login.html">Go to Login</a>
+    </div>
+
+    <div id="dashboardContent" class="dashboard-container" style="display: none;">
+        <div class="dashboard-header">
+            <h1>👨‍💼 Admin Dashboard</h1>
+            <div class="user-info">
+                <p>Logged in as: <strong id="userName"></strong></p>
+                <p>Role: <strong>Admin</strong></p>
+                <button class="logout-btn" onclick="logout()">Logout</button>
+            </div>
+        </div>
+
+        <div class="dashboard-grid">
+            <div class="form-card">
+                <h2>➕ Add New Movie</h2>
+                <div id="addMovieMessage" class="message"></div>
+                <form id="addMovieForm">
+                    <div class="form-group">
+                        <label for="title">Movie Title *</label>
+                        <input type="text" id="title" name="title" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description">Description *</label>
+                        <textarea id="description" name="description" required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="genre">Genre *</label>
+                        <input type="text" id="genre" name="genre" required placeholder="Drama, Action, etc.">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="language">Language *</label>
+                        <input type="text" id="language" name="language" required placeholder="English, Hindi, etc.">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="director">Director *</label>
+                        <input type="text" id="director" name="director" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="durationMinutes">Duration (minutes) *</label>
+                        <input type="number" id="durationMinutes" name="durationMinutes" required min="1">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="rating">Rating *</label>
+                        <select id="rating" name="rating" required>
+                            <option value="">Select Rating</option>
+                            <option value="G">G</option>
+                            <option value="PG">PG</option>
+                            <option value="PG13">PG-13</option>
+                            <option value="R">R</option>
+                            <option value="NC17">NC-17</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn-submit">Add Movie</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="movies-list">
+            <h2>📽️ Recently Added Movies</h2>
+            <div id="moviesContainer">
+                <p>Loading movies...</p>
+            </div>
+        </div>
+
+        <div class="movies-list" style="margin-top: 2rem;">
+            <h2>📊 Booking Statistics by User</h2>
+            <div style="overflow-x: auto;">
+                <table class="stats-table">
+                    <thead>
+                        <tr>
+                            <th>User Name</th>
+                            <th>Email</th>
+                            <th>Total Bookings</th>
+                            <th>Confirmed</th>
+                            <th>Pending</th>
+                            <th>Cancelled</th>
+                        </tr>
+                    </thead>
+                    <tbody id="statsContainer">
+                        <tr><td colspan="6" style="text-align: center;">Loading statistics...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/api.js"></script>
+    <script>
+        // Check authentication
+        document.addEventListener('DOMContentLoaded', () => {
+            const user = JSON.parse(localStorage.getItem('user'));
+
+            if (!user || user.role !== 'ADMIN') {
+                document.getElementById('notAuthenticated').style.display = 'block';
+                document.getElementById('dashboardContent').style.display = 'none';
+                return;
+            }
+
+            document.getElementById('notAuthenticated').style.display = 'none';
+            document.getElementById('dashboardContent').style.display = 'block';
+            document.getElementById('userName').textContent = user.firstName + ' ' + user.lastName;
+
+            // Load movies
+            loadMovies();
+
+            // Load statistics
+            loadStatistics();
+
+            // Handle form submission
+            document.getElementById('addMovieForm').addEventListener('submit', addMovie);
+        });
+
+        async function loadMovies() {
+            try {
+                const movies = await API.getMovies();
+                const container = document.getElementById('moviesContainer');
+
+                if (movies.length === 0) {
+                    container.innerHTML = '<p>No movies added yet</p>';
+                    return;
+                }
+
+                container.innerHTML = '';
+                movies.slice(-5).reverse().forEach(movie => {
+                    const movieDiv = `
+                        <div class="movie-item">
+                            <h3>${movie.title}</h3>
+                            <p><strong>Genre:</strong> ${movie.genre}</p>
+                            <p><strong>Director:</strong> ${movie.director}</p>
+                            <p><strong>Duration:</strong> ${movie.durationMinutes} mins</p>
+                            <p><strong>Rating:</strong> ${movie.rating} | <strong>Language:</strong> ${movie.language}</p>
+                        </div>
+                    `;
+                    container.innerHTML += movieDiv;
+                });
+            } catch (error) {
+                console.error('Error loading movies:', error);
+            }
+        }
+
+        async function addMovie(e) {
+            e.preventDefault();
+
+            const title = document.getElementById('title').value;
+            const description = document.getElementById('description').value;
+            const genre = document.getElementById('genre').value;
+            const language = document.getElementById('language').value;
+            const director = document.getElementById('director').value;
+            const durationMinutes = parseInt(document.getElementById('durationMinutes').value);
+            const rating = document.getElementById('rating').value;
+            const messageDiv = document.getElementById('addMovieMessage');
+
+            try {
+                const response = await fetch('/api/v1/movies', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        title,
+                        description,
+                        genre,
+                        language,
+                        director,
+                        durationMinutes,
+                        rating
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    messageDiv.textContent = '✅ Movie added successfully!';
+                    messageDiv.className = 'message success';
+                    document.getElementById('addMovieForm').reset();
+
+                    // Reload movies after 1 second
+                    setTimeout(() => {
+                        loadMovies();
+                        messageDiv.style.display = 'none';
+                    }, 1500);
+                } else {
+                    messageDiv.textContent = '❌ Error: ' + (data.message || 'Failed to add movie');
+                    messageDiv.className = 'message error';
+                }
+            } catch (error) {
+                messageDiv.textContent = '❌ Error: ' + error.message;
+                messageDiv.className = 'message error';
+            }
+        }
+
+        async function loadStatistics() {
+            try {
+                const stats = await fetch('/api/v1/bookings/stats/by-user').then(r => r.json());
+                const container = document.getElementById('statsContainer');
+
+                if (!stats || stats.length === 0) {
+                    container.innerHTML = '<tr><td colspan="6" style="text-align: center;">No booking data yet</td></tr>';
+                    return;
+                }
+
+                container.innerHTML = '';
+                stats.forEach(stat => {
+                    const row = `
+                        <tr>
+                            <td>${stat.userName}</td>
+                            <td>${stat.userEmail}</td>
+                            <td class="stat-number">${stat.totalBookings}</td>
+                            <td class="stat-confirmed">${stat.confirmedBookings}</td>
+                            <td class="stat-pending">${stat.pendingBookings}</td>
+                            <td class="stat-cancelled">${stat.cancelledBookings}</td>
+                        </tr>
+                    `;
+                    container.innerHTML += row;
+                });
+            } catch (error) {
+                console.error('Error loading statistics:', error);
+                document.getElementById('statsContainer').innerHTML = 
+                    '<tr><td colspan="6" style="color: red; text-align: center;">Error loading statistics</td></tr>';
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('user');
+            window.location.href = 'login.html';
+        }
+    </script>
+</body>
+</html>

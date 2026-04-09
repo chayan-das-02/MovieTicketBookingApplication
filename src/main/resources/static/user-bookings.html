@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Bookings - MovieTickets</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .page-header {
+            background: linear-gradient(135deg, var(--dark-color) 0%, #34495e 100%);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+
+        .page-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .booking-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            border-left: 5px solid var(--secondary-color);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .booking-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        .booking-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .booking-header h3 {
+            color: var(--primary-color);
+            margin: 0;
+            font-size: 1.5rem;
+        }
+
+        .booking-status {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .status-confirmed {
+            background-color: #e8f5e9;
+            color: var(--success-color);
+        }
+
+        .status-pending {
+            background-color: #fff3e0;
+            color: #ff9800;
+        }
+
+        .status-cancelled {
+            background-color: #ffebee;
+            color: var(--primary-color);
+        }
+
+        .booking-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .info-box {
+            padding: 1rem;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+        }
+
+        .info-box label {
+            display: block;
+            font-weight: 600;
+            color: var(--dark-color);
+            margin-bottom: 0.3rem;
+        }
+
+        .info-box p {
+            margin: 0;
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .booking-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .btn-cancel {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.6rem 1.2rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-cancel:hover {
+            background-color: #ff5252;
+            transform: translateY(-2px);
+        }
+
+        .btn-cancel:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            background-color: white;
+            border-radius: 10px;
+            color: #999;
+        }
+
+        .empty-state h3 {
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .user-greeting {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .user-info {
+            color: #666;
+        }
+
+        .logout-btn {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .logout-btn:hover {
+            background-color: #ff5252;
+        }
+
+        .booking-id {
+            font-family: monospace;
+            background-color: #f0f0f0;
+            padding: 0.2rem 0.5rem;
+            border-radius: 3px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">🎬 MovieTickets</div>
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="user-dashboard.html" class="nav-link">Dashboard</a></li>
+                <li><a href="user-bookings.html" class="nav-link active">My Bookings</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div id="notAuthenticated" style="display: none;">
+        <div class="page-header">
+            <h1>⛔ Access Denied</h1>
+            <p>Please log in to view your bookings</p>
+        </div>
+        <div class="dashboard-container">
+            <a href="login.html" class="back-link">← Go to Login</a>
+        </div>
+    </div>
+
+    <div id="authenticatedContent" style="display: none;">
+        <div class="page-header">
+            <h1>🎫 My Bookings</h1>
+        </div>
+
+        <div class="dashboard-container">
+            <div class="user-greeting">
+                <div class="user-info">
+                    <p>Welcome, <strong id="userName"></strong>!</p>
+                </div>
+                <button class="logout-btn" onclick="logout()">Logout</button>
+            </div>
+
+            <div id="bookingsContainer">
+                <p style="text-align: center;">Loading your bookings...</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/api.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const user = JSON.parse(localStorage.getItem('user'));
+
+            if (!user) {
+                document.getElementById('notAuthenticated').style.display = 'block';
+                document.getElementById('authenticatedContent').style.display = 'none';
+                return;
+            }
+
+            document.getElementById('notAuthenticated').style.display = 'none';
+            document.getElementById('authenticatedContent').style.display = 'block';
+            document.getElementById('userName').textContent = user.firstName + ' ' + user.lastName;
+
+            loadBookings(user.userId);
+        });
+
+        async function loadBookings(userId) {
+            try {
+                const bookings = await fetch(`/api/v1/bookings/user/${userId}`).then(r => r.json());
+                const [movies, shows, screens] = await Promise.all([
+                    API.getMovies(),
+                    API.getShows(),
+                    API.getScreens()
+                ]);
+
+                const container = document.getElementById('bookingsContainer');
+
+                if (bookings.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <h3>📭 No Bookings Yet</h3>
+                            <p>You haven't booked any shows yet.</p>
+                            <a href="user-dashboard.html" class="back-link">← Browse Shows</a>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = '';
+                bookings.forEach(booking => {
+                    const show = shows.find(s => s.showId === booking.showId);
+                    const movie = show ? movies.find(m => m.movieId === show.movieId) : null;
+                    const screen = show ? screens.find(s => s.screenId === show.screenId) : null;
+
+                    const startDate = new Date(show.startTime);
+                    const formattedDate = startDate.toLocaleDateString('en-US', {
+                        weekday: 'long',
+                        month: 'long',
+                        day: 'numeric',
+                        year: 'numeric'
+                    });
+                    const formattedTime = startDate.toLocaleTimeString('en-US', {
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+
+                    const statusClass = 'status-' + booking.status.toLowerCase();
+                    const canCancel = booking.status === 'PENDING' || booking.status === 'CONFIRMED';
+
+                    const bookingCard = `
+                        <div class="booking-card">
+                            <div class="booking-header">
+                                <h3>🎬 ${movie?.title || 'Unknown Movie'}</h3>
+                                <span class="booking-status ${statusClass}">${booking.status}</span>
+                            </div>
+
+                            <div class="booking-grid">
+                                <div class="info-box">
+                                    <label>📅 Date & Time</label>
+                                    <p>${formattedDate}</p>
+                                    <p>🕐 ${formattedTime}</p>
+                                </div>
+
+                                <div class="info-box">
+                                    <label>🎫 Booking ID</label>
+                                    <p class="booking-id">${booking.bookingRef}</p>
+                                </div>
+
+                                <div class="info-box">
+                                    <label>🎬 Screen & Seats</label>
+                                    <p>${screen?.screenName || 'Unknown'}</p>
+                                    <p>${booking.numberOfSeats} seat(s)</p>
+                                </div>
+
+                                <div class="info-box">
+                                    <label>💰 Total Price</label>
+                                    <p style="color: var(--success-color); font-weight: bold; font-size: 1.3rem;">$${booking.totalPrice}</p>
+                                </div>
+
+                                <div class="info-box">
+                                    <label>📍 Theater</label>
+                                    <p>${screen?.theaterId || 'Unknown'}</p>
+                                </div>
+
+                                <div class="info-box">
+                                    <label>⏰ Booked On</label>
+                                    <p>${new Date(booking.bookedAt).toLocaleDateString()}</p>
+                                </div>
+                            </div>
+
+                            <div class="booking-actions">
+                                ${canCancel ? `<button class="btn-cancel" onclick="cancelBooking('${booking.bookingId}')">🚫 Cancel Booking</button>` : ''}
+                                <button class="btn-cancel" style="background-color: var(--secondary-color);" onclick="downloadTicket('${booking.bookingRef}')">📥 Download Ticket</button>
+                            </div>
+                        </div>
+                    `;
+                    container.innerHTML += bookingCard;
+                });
+            } catch (error) {
+                console.error('Error loading bookings:', error);
+                document.getElementById('bookingsContainer').innerHTML = 
+                    '<p style="color: var(--primary-color); text-align: center;">Error loading bookings</p>';
+            }
+        }
+
+        function cancelBooking(bookingId) {
+            if (confirm('Are you sure you want to cancel this booking?')) {
+                fetch(`/api/v1/bookings/${bookingId}/cancel`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' }
+                })
+                .then(r => r.json())
+                .then(data => {
+                    alert('Booking cancelled successfully!');
+                    location.reload();
+                })
+                .catch(err => alert('Error cancelling booking: ' + err.message));
+            }
+        }
+
+        function downloadTicket(bookingRef) {
+            alert('Ticket download feature coming soon! Booking Reference: ' + bookingRef);
+        }
+
+        function logout() {
+            localStorage.removeItem('user');
+            window.location.href = 'login.html';
+        }
+    </script>
+</body>
+</html>

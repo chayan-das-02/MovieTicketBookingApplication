@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Ticket Booking System</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">🎬 MovieTickets</div>
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link active">Home</a></li>
+                <li><a href="movies.html" class="nav-link">Movies</a></li>
+                <li><a href="shows.html" class="nav-link">Shows</a></li>
+                <li><a href="theaters.html" class="nav-link">Theaters</a></li>
+                <li id="usersNav"><a href="users.html" class="nav-link">Users</a></li>
+                <li id="myBookingsNav" style="display:none;"><a href="user-bookings.html" class="nav-link">My Bookings</a></li>
+                <li id="adminNav" style="display:none;"><a href="admin-dashboard.html" class="nav-link">Admin</a></li>
+                <li id="userDashNav" style="display:none;"><a href="user-dashboard.html" class="nav-link">Dashboard</a></li>
+                <li id="logoutNav" style="display:none;"><a href="#" class="nav-link" onclick="logout()">Logout</a></li>
+                <li id="loginNav"><a href="login.html" class="nav-link">Login</a></li>
+                <li id="registerNav"><a href="register.html" class="nav-link">Register</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Welcome to MovieTickets</h1>
+            <p>Your ultimate movie booking platform</p>
+            <button class="btn btn-primary" onclick="window.location.href='shows.html'">
+                Browse Shows
+            </button>
+        </div>
+    </section>
+
+    <!-- Quick Stats -->
+    <section class="stats">
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-icon">🎥</div>
+                <div class="stat-number" id="movieCount">0</div>
+                <div class="stat-label">Movies Available</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🎬</div>
+                <div class="stat-number" id="showCount">0</div>
+                <div class="stat-label">Upcoming Shows</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🏢</div>
+                <div class="stat-number" id="theaterCount">0</div>
+                <div class="stat-label">Theaters</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Movies -->
+    <section class="featured">
+        <div class="container">
+            <h2>Featured Movies</h2>
+            <div class="movies-grid" id="featuredMovies">
+                <!-- Movies will be loaded here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Upcoming Shows -->
+    <section class="upcoming-shows">
+        <div class="container">
+            <h2>Upcoming Shows</h2>
+            <div class="shows-list" id="upcomingShows">
+                <!-- Shows will be loaded here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p>&copy; 2026 MovieTickets. All rights reserved.</p>
+            <p>Built with Spring Boot + SQLite</p>
+        </div>
+    </footer>
+
+    <script src="/js/api.js"></script>
+    <script>
+        // Check user session and update navigation
+        function updateNavigation() {
+            const user = JSON.parse(localStorage.getItem('user'));
+            
+            // Hide users link by default (only show to admins)
+            document.getElementById('usersNav').style.display = 'none';
+            
+            if (user) {
+                // User is logged in
+                document.getElementById('loginNav').style.display = 'none';
+                document.getElementById('registerNav').style.display = 'none';
+                document.getElementById('myBookingsNav').style.display = 'block';
+                document.getElementById('logoutNav').style.display = 'block';
+                
+                if (user.role === 'ADMIN') {
+                    document.getElementById('adminNav').style.display = 'block';
+                    // Show users link only for admins
+                    document.getElementById('usersNav').style.display = 'block';
+                } else {
+                    document.getElementById('userDashNav').style.display = 'block';
+                }
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('user');
+            window.location.href = 'index.html';
+        }
+
+        // Update navigation when page loads
+        updateNavigation();
+
+        // Load stats on page load
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const [movies, shows, theaters] = await Promise.all([
+                    API.getMovies(),
+                    API.getShows(),
+                    API.getTheaters()
+                ]);
+
+                // Update stats
+                document.getElementById('movieCount').textContent = movies.length;
+                document.getElementById('showCount').textContent = shows.length;
+                document.getElementById('theaterCount').textContent = theaters.length;
+
+                // Display featured movies
+                const featuredContainer = document.getElementById('featuredMovies');
+                movies.slice(0, 4).forEach(movie => {
+                    const movieCard = `
+                        <div class="movie-card">
+                            <div class="movie-poster">🎬</div>
+                            <div class="movie-info">
+                                <h3>${movie.title}</h3>
+                                <p class="movie-genre">${movie.genre}</p>
+                                <p class="movie-rating">Rating: ${movie.rating}</p>
+                                <p class="movie-director">Director: ${movie.director}</p>
+                                <p class="movie-duration">${movie.durationMinutes} mins</p>
+                            </div>
+                        </div>
+                    `;
+                    featuredContainer.innerHTML += movieCard;
+                });
+
+                // Display upcoming shows
+                const showsContainer = document.getElementById('upcomingShows');
+                shows.slice(0, 5).forEach(show => {
+                    const movieTitle = movies.find(m => m.movieId === show.movieId)?.title || 'Unknown';
+                    const showDate = new Date(show.startTime).toLocaleDateString();
+                    const showTime = new Date(show.startTime).toLocaleTimeString();
+                    
+                    const showCard = `
+                        <div class="show-item">
+                            <div class="show-left">
+                                <h4>${movieTitle}</h4>
+                                <p class="show-date">📅 ${showDate}</p>
+                                <p class="show-time">🕐 ${showTime}</p>
+                            </div>
+                            <div class="show-right">
+                                <p class="show-price">$${show.ticketPrice}</p>
+                                <p class="show-seats">${show.totalSeatsAvailable} seats</p>
+                                <button class="btn btn-small" onclick="bookShow(${show.showId})">Book Now</button>
+                            </div>
+                        </div>
+                    `;
+                    showsContainer.innerHTML += showCard;
+                });
+            } catch (error) {
+                console.error('Error loading data:', error);
+            }
+        });
+
+        function bookShow(showId) {
+            alert(`Booking functionality coming soon! Show ID: ${showId}`);
+        }
+    </script>
+</body>
+</html>

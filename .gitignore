@@ -1,0 +1,50 @@
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Maven
+target/
+.m2/
+*.jar
+*.war
+*.ear
+
+# Build artifacts
+out/
+build/
+.gradle/
+
+# Spring Boot
+*.log
+application-*.properties
+application-*.yml
+
+# Environment
+.env
+.env.local
+
+# Maven wrapper
+.mvn/wrapper/maven-wrapper.jar
+.mvn/wrapper/maven-wrapper.properties
+
+# IDE specific files
+*.iml
+*.iws
+*.ipr
+
+# OS specific
+Thumbs.db
+.AppleDouble
+.LSOverride
+
+# Database
+*.db
+*.sqlite
+
+# Temporary files
+tmp/
+temp/

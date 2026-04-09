@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Theaters - MovieTickets</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">🎬 MovieTickets</div>
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="movies.html" class="nav-link">Movies</a></li>
+                <li><a href="shows.html" class="nav-link">Shows</a></li>
+                <li><a href="theaters.html" class="nav-link active">Theaters</a></li>
+                <li id="usersNav"><a href="users.html" class="nav-link">Users</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1>Our Theaters</h1>
+            <p>Find theaters near you</p>
+        </div>
+    </section>
+
+    <!-- Theaters List -->
+    <section class="container">
+        <div class="theaters-container" id="theatersContainer">
+            <!-- Theaters will be loaded here -->
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p>&copy; 2026 MovieTickets. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="/js/api.js"></script>
+    <script>
+        // Hide users link for non-admins
+        function hideUsersNavForNonAdmins() {
+            const user = JSON.parse(localStorage.getItem('user'));
+            if (!user || user.role !== 'ADMIN') {
+                const usersNav = document.getElementById('usersNav');
+                if (usersNav) usersNav.style.display = 'none';
+            }
+        }
+        hideUsersNavForNonAdmins();
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const [theaters, screens] = await Promise.all([
+                    API.getTheaters(),
+                    API.getScreens()
+                ]);
+                
+                const container = document.getElementById('theatersContainer');
+                
+                if (theaters.length === 0) {
+                    container.innerHTML = '<p class="empty-state">No theaters found</p>';
+                    return;
+                }
+
+                theaters.forEach(theater => {
+                    const theaterScreens = screens.filter(s => s.theaterId === theater.theaterId);
+                    
+                    const screensList = theaterScreens.map(s => 
+                        `<li>${s.screenName} (${s.screenType}) - ${s.totalSeats} seats</li>`
+                    ).join('');
+
+                    const theaterCard = `
+                        <div class="theater-card">
+                            <div class="theater-header">
+                                <h3>🏢 ${theater.name}</h3>
+                            </div>
+                            <div class="theater-body">
+                                <p><strong>📍 City:</strong> ${theater.city}</p>
+                                <p><strong>📮 Address:</strong> ${theater.address}</p>
+                                <p><strong>📞 Phone:</strong> ${theater.phoneNumber}</p>
+                                <p><strong>📧 Email:</strong> ${theater.email}</p>
+                                <p><strong>🎬 Total Screens:</strong> ${theater.totalScreens}</p>
+                            </div>
+                            <div class="screens-section">
+                                <h4>Available Screens:</h4>
+                                <ul class="screens-list">
+                                    ${screensList || '<li>No screens available</li>'}
+                                </ul>
+                            </div>
+                            <div class="theater-footer">
+                                <button class="btn btn-primary" onclick="visitTheater(${theater.theaterId})">
+                                    View Shows
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    container.innerHTML += theaterCard;
+                });
+            } catch (error) {
+                console.error('Error loading theaters:', error);
+                document.getElementById('theatersContainer').innerHTML = 
+                    '<p class="error">Error loading theaters. Please try again later.</p>';
+            }
+        });
+
+        function visitTheater(theaterId) {
+            // Navigate to theater shows page with theater ID parameter
+            window.location.href = `theater-shows.html?theaterId=${theaterId}`;
+        }
+    </script>
+</body>
+</html>

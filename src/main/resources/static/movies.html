@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movies - MovieTickets</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">🎬 MovieTickets</div>
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="movies.html" class="nav-link active">Movies</a></li>
+                <li><a href="shows.html" class="nav-link">Shows</a></li>
+                <li><a href="theaters.html" class="nav-link">Theaters</a></li>
+                <li id="usersNav"><a href="users.html" class="nav-link">Users</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1>All Movies</h1>
+            <p>Browse our complete collection of movies</p>
+        </div>
+    </section>
+
+    <!-- Movies Grid -->
+    <section class="container">
+        <div class="movies-grid-large" id="moviesContainer">
+            <!-- Movies will be loaded here -->
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p>&copy; 2026 MovieTickets. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="/js/api.js"></script>
+    <script>
+        // Hide users link for non-admins
+        function hideUsersNavForNonAdmins() {
+            const user = JSON.parse(localStorage.getItem('user'));
+            if (!user || user.role !== 'ADMIN') {
+                const usersNav = document.getElementById('usersNav');
+                if (usersNav) usersNav.style.display = 'none';
+            }
+        }
+        hideUsersNavForNonAdmins();
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const movies = await API.getMovies();
+                const container = document.getElementById('moviesContainer');
+                
+                if (movies.length === 0) {
+                    container.innerHTML = '<p class="empty-state">No movies found</p>';
+                    return;
+                }
+
+                movies.forEach(movie => {
+                    const releaseYear = new Date(movie.releaseDate).getFullYear();
+                    const movieCard = `
+                        <div class="movie-card-large">
+                            <div class="movie-poster-large">🎬</div>
+                            <div class="movie-details">
+                                <h3>${movie.title}</h3>
+                                <div class="movie-meta">
+                                    <span class="badge">${movie.genre}</span>
+                                    <span class="badge">${movie.rating}</span>
+                                </div>
+                                <p class="description">${movie.description}</p>
+                                <div class="movie-footer">
+                                    <div>
+                                        <p><strong>Director:</strong> ${movie.director}</p>
+                                        <p><strong>Duration:</strong> ${movie.durationMinutes} minutes</p>
+                                        <p><strong>Language:</strong> ${movie.language}</p>
+                                        <p><strong>Release Year:</strong> ${releaseYear}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    container.innerHTML += movieCard;
+                });
+            } catch (error) {
+                console.error('Error loading movies:', error);
+                document.getElementById('moviesContainer').innerHTML = 
+                    '<p class="error">Error loading movies. Please try again later.</p>';
+            }
+        });
+    </script>
+</body>
+</html>

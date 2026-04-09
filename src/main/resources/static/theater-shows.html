@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Theater Shows - MovieTickets</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .theater-shows-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .theater-header {
+            background-color: white;
+            border-radius: 10px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .theater-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .theater-info p {
+            margin: 0.5rem 0;
+            color: #666;
+        }
+
+        .theater-info strong {
+            color: var(--dark-color);
+        }
+
+        .back-button {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 0.7rem 1.5rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .back-button:hover {
+            background-color: #3db8b0;
+        }
+
+        .shows-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .shows-container h2 {
+            color: var(--secondary-color);
+            margin-bottom: 1.5rem;
+        }
+
+        .show-card {
+            padding: 1.5rem;
+            border-left: 4px solid var(--secondary-color);
+            background-color: #f9f9f9;
+            margin-bottom: 1.5rem;
+            border-radius: 5px;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .show-details h3 {
+            color: var(--dark-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .show-details p {
+            margin: 0.25rem 0;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .show-pricing {
+            text-align: center;
+        }
+
+        .show-pricing .price {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--success-color);
+        }
+
+        .show-pricing .seats {
+            color: #666;
+            margin-top: 0.5rem;
+        }
+
+        .show-action {
+            text-align: center;
+        }
+
+        .btn-book {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-book:hover {
+            background-color: #3db8b0;
+            transform: translateY(-2px);
+        }
+
+        .btn-book:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .screen-info {
+            background-color: #f0f0f0;
+            padding: 0.5rem 1rem;
+            border-radius: 3px;
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 2rem;
+            color: #999;
+        }
+
+        .error {
+            color: var(--primary-color);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+
+        .status-running {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .status-upcoming {
+            background-color: #fff3e0;
+            color: #e65100;
+        }
+
+        .status-completed {
+            background-color: #f5f5f5;
+            color: #616161;
+        }
+
+        @media (max-width: 768px) {
+            .show-card {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .show-pricing,
+            .show-action {
+                text-align: left;
+            }
+
+            .theater-info {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">🎬 MovieTickets</div>
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="movies.html" class="nav-link">Movies</a></li>
+                <li><a href="shows.html" class="nav-link">Shows</a></li>
+                <li><a href="theaters.html" class="nav-link">Theaters</a></li>
+                <li id="usersNav"><a href="users.html" class="nav-link">Users</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1 id="theaterName">Theater Shows</h1>
+            <p id="theaterLocation">Loading...</p>
+        </div>
+    </section>
+
+    <!-- Theater Details and Shows -->
+    <section class="theater-shows-container">
+        <button class="back-button" onclick="goBack()">← Back to Theaters</button>
+        
+        <div class="theater-header" id="theaterHeader" style="display: none;">
+            <h2>Theater Details</h2>
+            <div class="theater-info">
+                <div>
+                    <p><strong>📍 Address:</strong> <span id="theaterAddress"></span></p>
+                    <p><strong>📞 Phone:</strong> <span id="theaterPhone"></span></p>
+                </div>
+                <div>
+                    <p><strong>📧 Email:</strong> <span id="theaterEmail"></span></p>
+                    <p><strong>🎬 Total Screens:</strong> <span id="theaterScreens"></span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="shows-container">
+            <h2>📽️ Shows at This Theater</h2>
+            <div id="showsContainer">
+                <p class="empty-state">Loading shows...</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p>&copy; 2026 MovieTickets. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="/js/api.js"></script>
+    <script>
+        // Hide users link for non-admins
+        function hideUsersNavForNonAdmins() {
+            const user = JSON.parse(localStorage.getItem('user'));
+            if (!user || user.role !== 'ADMIN') {
+                const usersNav = document.getElementById('usersNav');
+                if (usersNav) usersNav.style.display = 'none';
+            }
+        }
+
+        function goBack() {
+            window.history.back();
+        }
+
+        hideUsersNavForNonAdmins();
+
+        // Get theater ID from URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const theaterId = urlParams.get('theaterId');
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (!theaterId) {
+                document.getElementById('showsContainer').innerHTML = 
+                    '<p class="empty-state error">No theater specified</p>';
+                return;
+            }
+
+            try {
+                // Load theater details and shows
+                const [theater, shows, movies, screens] = await Promise.all([
+                    API.getTheaterById(theaterId),
+                    API.getShowsByTheater(theaterId),
+                    API.getMovies(),
+                    API.getScreens()
+                ]);
+
+                // Update theater header
+                document.getElementById('theaterName').textContent = theater.name;
+                document.getElementById('theaterLocation').textContent = `📍 ${theater.city}`;
+                document.getElementById('theaterHeader').style.display = 'block';
+                document.getElementById('theaterAddress').textContent = theater.address;
+                document.getElementById('theaterPhone').textContent = theater.phoneNumber;
+                document.getElementById('theaterEmail').textContent = theater.email;
+                document.getElementById('theaterScreens').textContent = theater.totalScreens;
+
+                const container = document.getElementById('showsContainer');
+
+                if (!shows || shows.length === 0) {
+                    container.innerHTML = '<p class="empty-state">No shows available at this theater</p>';
+                    return;
+                }
+
+                // Sort by start time
+                shows.sort((a, b) => new Date(a.startTime) - new Date(b.startTime));
+
+                container.innerHTML = '';
+                shows.forEach(show => {
+                    const movie = movies.find(m => m.movieId === show.movieId);
+                    const screen = screens.find(s => s.screenId === show.screenId);
+
+                    const startDate = new Date(show.startTime);
+                    const formattedDate = startDate.toLocaleDateString('en-US', {
+                        weekday: 'short',
+                        month: 'short',
+                        day: 'numeric'
+                    });
+                    const formattedTime = startDate.toLocaleTimeString('en-US', {
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+
+                    const isAvailable = show.totalSeatsAvailable > 0;
+                    const isScreening = show.status === 'RUNNING';
+                    const canBook = isAvailable && isScreening;
+
+                    // Status styling
+                    let statusClass = 'status-upcoming';
+                    let statusBadge = '⏱️ Upcoming';
+                    if (show.status === 'RUNNING') {
+                        statusClass = 'status-running';
+                        statusBadge = '🎬 Screening';
+                    } else if (show.status === 'COMPLETED') {
+                        statusClass = 'status-completed';
+                        statusBadge = '✓ Completed';
+                    }
+
+                    const showCard = `
+                        <div class="show-card">
+                            <div class="show-details">
+                                <h3>${movie?.title || 'Unknown'}</h3>
+                                <p><strong>📅 Date:</strong> ${formattedDate}</p>
+                                <p><strong>🕐 Time:</strong> ${formattedTime}</p>
+                                <p><strong>🎬 Screen:</strong> ${screen?.screenName || 'Unknown'}</p>
+                                <div class="screen-info">${screen?.screenType || 'Standard'} - ${screen?.totalSeats || 0} seats</div>
+                                <p><strong>Description:</strong> ${movie?.description?.substring(0, 100) || 'N/A'}...</p>
+                            </div>
+                            <div class="show-pricing">
+                                <div class="price">₹${show.ticketPrice}</div>
+                                <div class="seats">${show.totalSeatsAvailable} seats available</div>
+                                <span class="status-badge ${statusClass}">${statusBadge}</span>
+                            </div>
+                            <div class="show-action">
+                                <button class="btn-book" 
+                                    ${!canBook ? 'disabled' : ''} 
+                                    title="${!isScreening ? 'Cannot book - Show is ' + show.status : (!isAvailable ? 'No seats available' : 'Click to book')}"
+                                    onclick="bookShowForTheater(${show.showId}, '${movie?.title}', ${show.ticketPrice}, this)">
+                                    ${canBook ? '🎫 Book Now' : (!isScreening ? 'Not Available' : 'Sold Out')}
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    container.innerHTML += showCard;
+                });
+            } catch (error) {
+                console.error('Error loading theater shows:', error);
+                document.getElementById('showsContainer').innerHTML = 
+                    '<p class="empty-state error">Error loading shows. Please try again later.</p>';
+            }
+        });
+
+        async function bookShowForTheater(showId, movieTitle, ticketPrice, buttonElement) {
+            const user = JSON.parse(localStorage.getItem('user'));
+            
+            if (!user) {
+                alert('Please log in to book tickets');
+                window.location.href = 'login.html';
+                return;
+            }
+
+            const confirmBooking = confirm(`Book a ticket for "${movieTitle}" at ₹${ticketPrice}?`);
+
+            if (confirmBooking) {
+                // Disable button while processing
+                if (buttonElement) {
+                    buttonElement.disabled = true;
+                }
+
+                try {
+                    // Get available seats for this show
+                    const seatsResponse = await fetch(`/api/v1/seats/show/${showId}/available`);
+                    
+                    if (!seatsResponse.ok) {
+                        throw new Error(`Failed to fetch available seats: ${seatsResponse.status} ${seatsResponse.statusText}`);
+                    }
+                    
+                    const availableSeats = await seatsResponse.json();
+                    
+                    if (!availableSeats || availableSeats.length === 0) {
+                        throw new Error('No available seats for this show');
+                    }
+
+                    // Use the first available seat
+                    const seatId = availableSeats[0].seatId;
+
+                    const bookingRequest = {
+                        showId: showId,
+                        seatIds: [seatId]
+                    };
+
+                    const response = await fetch(`/api/v1/bookings/users/${user.userId}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(bookingRequest)
+                    });
+
+                    if (!response.ok) {
+                        let errorMessage = `Error ${response.status}: ${response.statusText}`;
+                        try {
+                            const errorData = await response.json();
+                            errorMessage = errorData.message || errorMessage;
+                        } catch (e) {
+                            // If response is not JSON, use the status text
+                        }
+                        throw new Error(errorMessage);
+                    }
+
+                    const bookingData = await response.json();
+                    alert(`✅ Booking successful!\nBooking Reference: ${bookingData.bookingRef}\nTotal: ₹${bookingData.totalPrice}`);
+                    
+                    // Refresh shows
+                    location.reload();
+                } catch (error) {
+                    console.error('Booking error:', error);
+                    alert(`❌ Booking failed: ${error.message}`);
+                    if (buttonElement) {
+                        buttonElement.disabled = false;
+                    }
+                }
+            }
+        }
+    </script>
+</body>
+</html>
