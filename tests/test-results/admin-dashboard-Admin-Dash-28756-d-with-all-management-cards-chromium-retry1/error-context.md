@@ -12,26 +12,20 @@
 # Error details
 
 ```
-Error: expect(locator).toContainText(expected) failed
+Test timeout of 30000ms exceeded while running "beforeEach" hook.
+```
 
-Locator: locator('h3')
-Expected substring: "User Management"
-Error: strict mode violation: locator('h3') resolved to 4 elements:
-    1) <h3>Bhool Bhulaiyaa 3</h3> aka getByRole('heading', { name: 'Bhool Bhulaiyaa' })
-    2) <h3>Pathaan</h3> aka getByRole('heading', { name: 'Pathaan' })
-    3) <h3>Jawan</h3> aka getByRole('heading', { name: 'Jawan' })
-    4) <h3>Gadar 2</h3> aka getByRole('heading', { name: 'Gadar' })
-
-Call log:
-  - Expect "toContainText" with timeout 5000ms
-  - waiting for locator('h3')
-
+```
+Error: page.waitForURL: Test timeout of 30000ms exceeded.
+=========================== logs ===========================
+waiting for navigation to "http://localhost:8080/admin-dashboard.html" until "load"
+============================================================
 ```
 
 # Page snapshot
 
 ```yaml
-- generic [active] [ref=e1]:
+- generic [ref=e1]:
   - navigation [ref=e2]:
     - generic [ref=e3]:
       - generic [ref=e4]: 🎬 MovieTickets
@@ -40,155 +34,38 @@ Call log:
           - link "Home" [ref=e7] [cursor=pointer]:
             - /url: index.html
         - listitem [ref=e8]:
-          - link "Admin" [ref=e9] [cursor=pointer]:
-            - /url: admin-dashboard.html
+          - link "Login" [ref=e9] [cursor=pointer]:
+            - /url: login.html
         - listitem [ref=e10]:
-          - link "User" [ref=e11] [cursor=pointer]:
-            - /url: user-dashboard.html
+          - link "Register" [ref=e11] [cursor=pointer]:
+            - /url: register.html
   - generic [ref=e12]:
-    - generic [ref=e13]:
-      - heading "👨‍💼 Admin Dashboard" [level=1] [ref=e14]
-      - generic [ref=e15]:
-        - paragraph [ref=e16]:
-          - text: "Logged in as:"
-          - strong [ref=e17]: Admin User
-        - paragraph [ref=e18]:
-          - text: "Role:"
-          - strong [ref=e19]: Admin
-        - button "Logout" [ref=e20] [cursor=pointer]
-    - generic [ref=e22]:
-      - heading "➕ Add New Movie" [level=2] [ref=e23]
-      - generic [ref=e24]:
-        - generic [ref=e25]:
-          - generic [ref=e26]: Movie Title *
-          - textbox "Movie Title *" [ref=e27]
-        - generic [ref=e28]:
-          - generic [ref=e29]: Description *
-          - textbox "Description *" [ref=e30]
-        - generic [ref=e31]:
-          - generic [ref=e32]: Genre *
-          - textbox "Genre *" [ref=e33]:
-            - /placeholder: Drama, Action, etc.
-        - generic [ref=e34]:
-          - generic [ref=e35]: Language *
-          - textbox "Language *" [ref=e36]:
-            - /placeholder: English, Hindi, etc.
-        - generic [ref=e37]:
-          - generic [ref=e38]: Director *
-          - textbox "Director *" [ref=e39]
-        - generic [ref=e40]:
-          - generic [ref=e41]: Duration (minutes) *
-          - spinbutton "Duration (minutes) *" [ref=e42]
-        - generic [ref=e43]:
-          - generic [ref=e44]: Rating *
-          - combobox "Rating *" [ref=e45]:
-            - option "Select Rating" [selected]
-            - option "G"
-            - option "PG"
-            - option "PG-13"
-            - option "R"
-            - option "NC-17"
-        - button "Add Movie" [ref=e46] [cursor=pointer]
-    - generic [ref=e47]:
-      - heading "📽️ Recently Added Movies" [level=2] [ref=e48]
-      - generic [ref=e49]:
-        - generic [ref=e50]:
-          - heading "Bhool Bhulaiyaa 3" [level=3] [ref=e51]
-          - paragraph [ref=e52]:
-            - strong [ref=e53]: "Genre:"
-            - text: Horror/Comedy
-          - paragraph [ref=e54]:
-            - strong [ref=e55]: "Director:"
-            - text: Anees Bazmee
-          - paragraph [ref=e56]:
-            - strong [ref=e57]: "Duration:"
-            - text: 152 mins
-          - paragraph [ref=e58]:
-            - strong [ref=e59]: "Rating:"
-            - text: PG |
-            - strong [ref=e60]: "Language:"
-            - text: Hindi
-        - generic [ref=e61]:
-          - heading "Pathaan" [level=3] [ref=e62]
-          - paragraph [ref=e63]:
-            - strong [ref=e64]: "Genre:"
-            - text: Action/Spy Thriller
-          - paragraph [ref=e65]:
-            - strong [ref=e66]: "Director:"
-            - text: Siddharth Anand
-          - paragraph [ref=e67]:
-            - strong [ref=e68]: "Duration:"
-            - text: 146 mins
-          - paragraph [ref=e69]:
-            - strong [ref=e70]: "Rating:"
-            - text: PG13 |
-            - strong [ref=e71]: "Language:"
-            - text: Hindi
-        - generic [ref=e72]:
-          - heading "Jawan" [level=3] [ref=e73]
-          - paragraph [ref=e74]:
-            - strong [ref=e75]: "Genre:"
-            - text: Action/Thriller
-          - paragraph [ref=e76]:
-            - strong [ref=e77]: "Director:"
-            - text: Atlee
-          - paragraph [ref=e78]:
-            - strong [ref=e79]: "Duration:"
-            - text: 169 mins
-          - paragraph [ref=e80]:
-            - strong [ref=e81]: "Rating:"
-            - text: PG13 |
-            - strong [ref=e82]: "Language:"
-            - text: Hindi
-        - generic [ref=e83]:
-          - heading "Gadar 2" [level=3] [ref=e84]
-          - paragraph [ref=e85]:
-            - strong [ref=e86]: "Genre:"
-            - text: Action/Drama
-          - paragraph [ref=e87]:
-            - strong [ref=e88]: "Director:"
-            - text: Anil Sharma
-          - paragraph [ref=e89]:
-            - strong [ref=e90]: "Duration:"
-            - text: 162 mins
-          - paragraph [ref=e91]:
-            - strong [ref=e92]: "Rating:"
-            - text: PG |
-            - strong [ref=e93]: "Language:"
-            - text: Hindi
-    - generic [ref=e94]:
-      - heading "📊 Booking Statistics by User" [level=2] [ref=e95]
-      - table [ref=e97]:
-        - rowgroup [ref=e98]:
-          - row "User Name Email Total Bookings Confirmed Pending Cancelled" [ref=e99]:
-            - columnheader "User Name" [ref=e100]
-            - columnheader "Email" [ref=e101]
-            - columnheader "Total Bookings" [ref=e102]
-            - columnheader "Confirmed" [ref=e103]
-            - columnheader "Pending" [ref=e104]
-            - columnheader "Cancelled" [ref=e105]
-        - rowgroup [ref=e106]:
-          - row "Admin User admin@example.com 0 0 0 0" [ref=e107]:
-            - cell "Admin User" [ref=e108]
-            - cell "admin@example.com" [ref=e109]
-            - cell "0" [ref=e110]
-            - cell "0" [ref=e111]
-            - cell "0" [ref=e112]
-            - cell "0" [ref=e113]
-          - row "John Doe john@example.com 0 0 0 0" [ref=e114]:
-            - cell "John Doe" [ref=e115]
-            - cell "john@example.com" [ref=e116]
-            - cell "0" [ref=e117]
-            - cell "0" [ref=e118]
-            - cell "0" [ref=e119]
-            - cell "0" [ref=e120]
-          - row "Jane Smith jane@example.com 0 0 0 0" [ref=e121]:
-            - cell "Jane Smith" [ref=e122]
-            - cell "jane@example.com" [ref=e123]
-            - cell "0" [ref=e124]
-            - cell "0" [ref=e125]
-            - cell "0" [ref=e126]
-            - cell "0" [ref=e127]
+    - heading "🎬 Login" [level=1] [ref=e14]
+    - generic [ref=e15]:
+      - heading "Demo Credentials:" [level=4] [ref=e16]
+      - paragraph [ref=e17]:
+        - strong [ref=e18]: "Admin:"
+        - text: admin@example.com / admin123
+      - paragraph [ref=e19]:
+        - strong [ref=e20]: "User:"
+        - text: john@example.com / password123
+    - generic [ref=e21]:
+      - generic [ref=e22]:
+        - generic [ref=e23]: Email
+        - textbox "Email" [ref=e24]:
+          - /placeholder: Enter your email
+          - text: admin@example.com
+      - generic [ref=e25]:
+        - generic [ref=e26]: Password
+        - textbox "Password" [ref=e27]:
+          - /placeholder: Enter your password
+          - text: admin123
+      - button "Login" [active] [ref=e28] [cursor=pointer]
+    - generic [ref=e29]: "Login failed: could not prepare statement [[SQLITE_ERROR] SQL error or missing database (no such table: users)] [select u1_0.user_id,u1_0.created_at,u1_0.email,u1_0.first_name,u1_0.last_name,u1_0.password,u1_0.phone_number,u1_0.role,u1_0.updated_at from users u1_0 where u1_0.email=?]"
+    - generic [ref=e30]:
+      - text: Don't have an account?
+      - link "Register here" [ref=e31] [cursor=pointer]:
+        - /url: register.html
 ```
 
 # Test source
@@ -206,7 +83,8 @@ Call log:
   10  |   await page.fill('input[name="email"]', ADMIN_EMAIL);
   11  |   await page.fill('input[name="password"]', ADMIN_PASSWORD);
   12  |   await page.click('button[type="submit"]');
-  13  |   await page.waitForURL(`${BASE_URL}/admin-dashboard.html`);
+> 13  |   await page.waitForURL(`${BASE_URL}/admin-dashboard.html`);
+      |              ^ Error: page.waitForURL: Test timeout of 30000ms exceeded.
   14  | }
   15  | 
   16  | test.describe('Admin Dashboard Management Pages', () => {
@@ -236,8 +114,7 @@ Call log:
   40  |     ];
   41  |     
   42  |     for (const module of management_modules) {
-> 43  |       await expect(page.locator('h3')).toContainText(module);
-      |                                        ^ Error: expect(locator).toContainText(expected) failed
+  43  |       await expect(page.locator('h3')).toContainText(module);
   44  |     }
   45  |     
   46  |     // Check for statistics cards
@@ -308,34 +185,4 @@ Call log:
   111 |     
   112 |     await expect(page.locator('h1')).toContainText('Movie Management');
   113 |     await expect(page.locator('text=Add New Movie')).toBeVisible();
-  114 |     await expect(page.locator('text=All Movies')).toBeVisible();
-  115 |   });
-  116 | 
-  117 |   test('Movie Management form has all required fields', async ({ page }) => {
-  118 |     await page.goto(`${BASE_URL}/movie-management.html`);
-  119 |     
-  120 |     // Check form fields
-  121 |     await expect(page.locator('input[name="title"]')).toBeVisible();
-  122 |     await expect(page.locator('textarea[name="description"]')).toBeVisible();
-  123 |     await expect(page.locator('input[name="genre"]')).toBeVisible();
-  124 |     await expect(page.locator('input[name="language"]')).toBeVisible();
-  125 |     await expect(page.locator('input[name="director"]')).toBeVisible();
-  126 |     await expect(page.locator('input[name="durationMinutes"]')).toBeVisible();
-  127 |     await expect(page.locator('select[name="rating"]')).toBeVisible();
-  128 |   });
-  129 | 
-  130 |   test('Movie Management displays movies in grid', async ({ page }) => {
-  131 |     await page.goto(`${BASE_URL}/movie-management.html`);
-  132 |     
-  133 |     // Wait for movies to load
-  134 |     await page.waitForTimeout(1500);
-  135 |     
-  136 |     // Check if movie cards are visible
-  137 |     const movieCards = await page.locator('.movie-card').count();
-  138 |     expect(movieCards).toBeGreaterThanOrEqual(0);
-  139 |     
-  140 |     if (movieCards > 0) {
-  141 |       await expect(page.locator('.movie-card h3')).toContainText(/./);
-  142 |     }
-  143 |   });
 ```

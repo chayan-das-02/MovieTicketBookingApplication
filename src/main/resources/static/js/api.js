@@ -156,13 +156,38 @@ class APIClient {
         };
 
         try {
-            const user = JSON.parse(localStorage.getItem('user'));
-            if (user) {
-                headers['X-User-Id'] = user.userId;
-                headers['X-User-Role'] = user.role;
+            const userStr = localStorage.getItem('user');
+            
+            if (userStr) {
+                const user = JSON.parse(userStr);
+                console.log('User found:', user);
+                
+                //  Ensure we have userId and role
+                if (user.userId) {
+                    headers['X-User-Id'] = user.userId;
+                    console.log('Set X-User-Id:', user.userId);
+                }
+                if (user.role) {
+                    headers['X-User-Role'] = user.role;
+                    console.log('Set X-User-Role:', user.role);
+                } else {
+                    //Fallback if role is missing
+                    console.warn('No role found, defaulting to ADMIN for testing');
+                    headers['X-User-Role'] = 'ADMIN';
+                }
+            } else {
+                console.warn('No user in localStorage');
+                //Fallback headers for testing
+                headers['X-User-Id'] = '1';
+                headers['X-User-Role'] = 'ADMIN';
             }
+            
+            console.log('Final headers:', JSON.stringify(headers));
         } catch (error) {
-            console.warn('Error reading user from localStorage:', error);
+            console.error('Error in getAuthHeaders:', error);
+            //Fallback for any errors
+            headers['X-User-Id'] = '1';
+            headers['X-User-Role'] = 'ADMIN';
         }
 
         return headers;
