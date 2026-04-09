@@ -2,6 +2,7 @@ package com.movieticket.controller;
 
 import com.movieticket.dto.UserDTO;
 import com.movieticket.dto.UserRegisterRequest;
+import com.movieticket.dto.UpdateUserRequest;
 import com.movieticket.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,7 +77,7 @@ public class UserController {
 
     @PutMapping("/{userId}")
     public ResponseEntity<?> updateUser(@PathVariable Long userId, 
-                                        @Valid @RequestBody UserRegisterRequest request,
+                                        @Valid @RequestBody UpdateUserRequest request,
                                         @RequestHeader(value = "X-User-Id", required = false) String xUserId,
                                         @RequestHeader(value = "X-User-Role", required = false) String xUserRole) {
         // Allow users to update their own profile or admins to update any profile

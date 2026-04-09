@@ -2,6 +2,7 @@ package com.movieticket.service;
 
 import com.movieticket.dto.UserDTO;
 import com.movieticket.dto.UserRegisterRequest;
+import com.movieticket.dto.UpdateUserRequest;
 import com.movieticket.entity.User;
 import com.movieticket.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,6 +69,34 @@ public class UserService {
         user.setLastName(request.getLastName());
         if (request.getPhoneNumber() != null) {
             user.setPhoneNumber(request.getPhoneNumber());
+        }
+        user.setUpdatedAt(LocalDateTime.now());
+
+        User updatedUser = userRepository.save(user);
+        return convertToDTO(updatedUser);
+    }
+
+    public UserDTO updateUser(Long userId, UpdateUserRequest request) {
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        user.setFirstName(request.getFirstName());
+        user.setLastName(request.getLastName());
+        user.setEmail(request.getEmail());
+        if (request.getPhoneNumber() != null) {
+            user.setPhoneNumber(request.getPhoneNumber());
+        }
+        // Only update password if provided
+        if (request.getPassword() != null && !request.getPassword().isEmpty()) {
+            user.setPassword(request.getPassword());
+        }
+        // Update role if provided
+        if (request.getRole() != null && !request.getRole().isEmpty()) {
+            try {
+                user.setRole(User.UserRole.valueOf(request.getRole()));
+            } catch (IllegalArgumentException e) {
+                throw new IllegalArgumentException("Invalid role: " + request.getRole());
+            }
         }
         user.setUpdatedAt(LocalDateTime.now());
 

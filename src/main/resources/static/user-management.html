@@ -451,7 +451,8 @@
                 document.getElementById('firstName').value = name[0];
                 document.getElementById('lastName').value = name[1] || '';
                 document.getElementById('email').value = cells[1].textContent;
-                document.getElementById('password').value = ''; // Password field should be optional for edit
+                document.getElementById('password').value = '';
+                document.getElementById('password').required = false; // Password not required for edit
                 document.getElementById('role').value = cells[2].textContent.trim();
                 document.getElementById('formTitle').textContent = '✏️ Edit User';
             }
