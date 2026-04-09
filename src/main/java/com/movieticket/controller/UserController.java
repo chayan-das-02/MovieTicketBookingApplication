@@ -60,17 +60,14 @@ public class UserController {
     @GetMapping
     public ResponseEntity<?> getAllUsers(@RequestHeader(value = "X-User-Role", required = false) String xUserRole,
                                          @RequestHeader(value = "x-user-role", required = false) String xUserRoleLower) {
-        // Check both uppercase and lowercase variants
+        // Check both uppercase and lowercase header variants
         String role = xUserRole != null ? xUserRole : xUserRoleLower;
-        
-        System.out.println("[DEBUG] GET /users - X-User-Role: " + xUserRole + ", x-user-role: " + xUserRoleLower + ", final role: " + role);
         
         // Check if user is admin
         if (!"ADMIN".equals(role)) {
-            System.out.println("[DEBUG] Access denied - role is: " + role);
             return ResponseEntity.status(403).body(new ErrorResponse(
                 "Access Denied",
-                "Only administrators can view all users. Role: " + role
+                "Only administrators can view all users"
             ));
         }
         List<UserDTO> users = userService.getAllUsers();
