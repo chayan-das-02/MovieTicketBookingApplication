@@ -30,6 +30,20 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(userDTO);
     }
 
+    @PostMapping
+    public ResponseEntity<?> createUser(@Valid @RequestBody UserRegisterRequest request,
+                                        @RequestHeader(value = "X-User-Role", required = false) String xUserRole) {
+        // Only admins can create users through this endpoint
+        if (xUserRole == null || !"ADMIN".equals(xUserRole)) {
+            return ResponseEntity.status(403).body(new ErrorResponse(
+                "Access Denied",
+                "Only admins can create users"
+            ));
+        }
+        UserDTO userDTO = userService.registerUser(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(userDTO);
+    }
+
     @GetMapping("/{userId}")
     public ResponseEntity<?> getUserById(@PathVariable Long userId, 
                                           @RequestHeader(value = "X-User-Id", required = false) String xUserId,
