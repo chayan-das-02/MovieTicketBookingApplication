@@ -140,7 +140,10 @@
             const user = JSON.parse(localStorage.getItem('user'));
             
             // Hide users link by default (only show to admins)
-            document.getElementById('usersNav').style.display = 'none';
+            const usersNav = document.getElementById('usersNav');
+            if (usersNav) {
+                usersNav.style.display = 'none';
+            }
             
             if (user) {
                 // User is logged in

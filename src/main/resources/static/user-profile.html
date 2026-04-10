@@ -329,8 +329,13 @@
             document.getElementById('lastName').textContent = user.lastName;
             document.getElementById('email').textContent = user.email;
             document.getElementById('phone').textContent = user.phoneNumber || 'Not provided';
-            document.getElementById('memberSince').textContent = new Date(user.createdAt).toLocaleDateString();
-            document.getElementById('lastUpdated').textContent = new Date(user.updatedAt).toLocaleDateString();
+            
+            // Handle dates safely
+            const memberDate = user.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'N/A';
+            const updateDate = user.updatedAt ? new Date(user.updatedAt).toLocaleDateString() : 'N/A';
+            
+            document.getElementById('memberSince').textContent = memberDate;
+            document.getElementById('lastUpdated').textContent = updateDate;
 
             // Load user bookings
             try {

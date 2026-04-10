@@ -109,7 +109,7 @@ class APIClient {
      * Get bookings for a user
      */
     async getUserBookings(userId) {
-        return this.getRequest(`/bookings/users/${userId}`);
+        return this.getRequest(`/bookings/user/${userId}`);
     }
 
     /**
