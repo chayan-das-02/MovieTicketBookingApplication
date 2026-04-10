@@ -4,22 +4,43 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Movie Ticket Booking System</title>
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='75' font-size='75'>🎬</text></svg>">
     <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
     <!-- Navigation -->
     <nav class="navbar">
         <div class="nav-container">
-            <div class="nav-logo">🎬 MovieTickets</div>
+            <div class="nav-logo"><a href="index.html" class="nav-link active">🎬 MovieTickets</a></div>
             <ul class="nav-menu">
                 <li><a href="index.html" class="nav-link active">Home</a></li>
-                <li><a href="movies.html" class="nav-link">Movies</a></li>
+                <!-- <li><a href="movies.html" class="nav-link">Movies</a></li> -->
                 <li><a href="shows.html" class="nav-link">Shows</a></li>
-                <li><a href="theaters.html" class="nav-link">Theaters</a></li>
-                <li id="usersNav"><a href="users.html" class="nav-link">Users</a></li>
+                <!-- <li><a href="theaters.html" class="nav-link">Theaters</a></li> -->
+                <!-- <li id="usersNav"><a href="users.html" class="nav-link">Users</a></li> -->
                 <li id="myBookingsNav" style="display:none;"><a href="user-bookings.html" class="nav-link">My Bookings</a></li>
                 <li id="adminNav" style="display:none;"><a href="admin-dashboard.html" class="nav-link">Admin</a></li>
                 <li id="userDashNav" style="display:none;"><a href="user-dashboard.html" class="nav-link">Dashboard</a></li>
+                <li id="userProfileNav" style="display:none;" class="nav-profile">
+                    <a href="#" class="nav-link" onclick="toggleProfileMenu(event)">
+                        <span id="userName">Profile</span> ▼
+                    </a>
+                    <div id="profileMenu" class="profile-menu" style="display:none;">
+                        <a href="user-profile.html" onclick="closeProfileMenu()">📋 My Profile</a>
+                        <a href="user-bookings.html" onclick="closeProfileMenu()">🎟️ My Bookings</a>
+                        <a href="#" onclick="logout(); return false;">🚪 Logout</a>
+                    </div>
+                </li>
+                <li id="adminProfileNav" style="display:none;" class="nav-profile">
+                    <a href="#" class="nav-link" onclick="toggleProfileMenu(event)">
+                        <span id="adminName">Admin</span> ▼
+                    </a>
+                    <div id="adminProfileMenu" class="profile-menu" style="display:none;">
+                        <a href="admin-dashboard.html" onclick="closeProfileMenu()">🎛️ Dashboard</a>
+                        <a href="user-profile.html" onclick="closeProfileMenu()">📋 My Profile</a>
+                        <a href="#" onclick="logout(); return false;">🚪 Logout</a>
+                    </div>
+                </li>
                 <li id="logoutNav" style="display:none;"><a href="#" class="nav-link" onclick="logout()">Logout</a></li>
                 <li id="loginNav"><a href="login.html" class="nav-link">Login</a></li>
                 <li id="registerNav"><a href="register.html" class="nav-link">Register</a></li>
@@ -89,6 +110,31 @@
 
     <script src="/js/api.js"></script>
     <script>
+        // Profile menu toggle
+        function toggleProfileMenu(event) {
+            event.preventDefault();
+            const user = JSON.parse(localStorage.getItem('user'));
+            if (user && user.role === 'ADMIN') {
+                const menu = document.getElementById('adminProfileMenu');
+                menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+            } else if (user) {
+                const menu = document.getElementById('profileMenu');
+                menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+            }
+        }
+
+        function closeProfileMenu() {
+            document.getElementById('profileMenu').style.display = 'none';
+            document.getElementById('adminProfileMenu').style.display = 'none';
+        }
+
+        // Close menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.nav-profile')) {
+                closeProfileMenu();
+            }
+        });
+
         // Check user session and update navigation
         function updateNavigation() {
             const user = JSON.parse(localStorage.getItem('user'));
@@ -100,15 +146,17 @@
                 // User is logged in
                 document.getElementById('loginNav').style.display = 'none';
                 document.getElementById('registerNav').style.display = 'none';
-                document.getElementById('myBookingsNav').style.display = 'block';
-                document.getElementById('logoutNav').style.display = 'block';
+                document.getElementById('myBookingsNav').style.display = 'none';
+                document.getElementById('userDashNav').style.display = 'none';
+                document.getElementById('adminNav').style.display = 'none';
+                document.getElementById('logoutNav').style.display = 'none';
                 
                 if (user.role === 'ADMIN') {
-                    document.getElementById('adminNav').style.display = 'block';
-                    // Show users link only for admins
-                    document.getElementById('usersNav').style.display = 'block';
+                    document.getElementById('adminProfileNav').style.display = 'block';
+                    document.getElementById('adminName').textContent = `👤 ${user.firstName} ${user.lastName} (Admin)`;
                 } else {
-                    document.getElementById('userDashNav').style.display = 'block';
+                    document.getElementById('userProfileNav').style.display = 'block';
+                    document.getElementById('userName').textContent = `👤 ${user.firstName} ${user.lastName}`;
                 }
             }
         }
@@ -148,6 +196,46 @@
                                 <p class="movie-director">Director: ${movie.director}</p>
                                 <p class="movie-duration">${movie.durationMinutes} mins</p>
                             </div>
+                        </div>
+                    `;
+                    featuredContainer.innerHTML += movieCard;
+                });
+
+                // Display upcoming shows
+                const showsContainer = document.getElementById('upcomingShows');
+                shows.slice(0, 5).forEach(show => {
+                    const movieTitle = movies.find(m => m.movieId === show.movieId)?.title || 'Unknown';
+                    const showDate = new Date(show.startTime).toLocaleDateString();
+                    const showTime = new Date(show.startTime).toLocaleTimeString();
+                    
+                    const showCard = `
+                        <div class="show-item">
+                            <div class="show-left">
+                                <h4>${movieTitle}</h4>
+                                <p class="show-date">📅 ${showDate}</p>
+                                <p class="show-time">🕐 ${showTime}</p>
+                            </div>
+                            <div class="show-right">
+                                <p class="show-price">$${show.ticketPrice}</p>
+                                <p class="show-seats">${show.totalSeatsAvailable} seats</p>
+                                <button class="btn btn-small" onclick="bookShow(${show.showId})">Book Now</button>
+                            </div>
+                        </div>
+                    `;
+                    showsContainer.innerHTML += showCard;
+                });
+            } catch (error) {
+                console.error('Error loading data:', error);
+                document.getElementById('movieCount').textContent = '0';
+                document.getElementById('showCount').textContent = '0';
+                document.getElementById('theaterCount').textContent = '0';
+            }
+        });
+
+        function bookShow(showId) {
+            alert(`Booking functionality coming soon! Show ID: ${showId}`);
+        }
+    </script>
                         </div>
                     `;
                     featuredContainer.innerHTML += movieCard;

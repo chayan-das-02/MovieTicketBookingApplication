@@ -12,60 +12,10 @@
 # Error details
 
 ```
-Test timeout of 30000ms exceeded while running "beforeEach" hook.
-```
+Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:8080/login.html
+Call log:
+  - navigating to "http://localhost:8080/login.html", waiting until "load"
 
-```
-Error: page.waitForURL: Test timeout of 30000ms exceeded.
-=========================== logs ===========================
-waiting for navigation to "http://localhost:8080/admin-dashboard.html" until "load"
-============================================================
-```
-
-# Page snapshot
-
-```yaml
-- generic [ref=e1]:
-  - navigation [ref=e2]:
-    - generic [ref=e3]:
-      - generic [ref=e4]: 🎬 MovieTickets
-      - list [ref=e5]:
-        - listitem [ref=e6]:
-          - link "Home" [ref=e7] [cursor=pointer]:
-            - /url: index.html
-        - listitem [ref=e8]:
-          - link "Login" [ref=e9] [cursor=pointer]:
-            - /url: login.html
-        - listitem [ref=e10]:
-          - link "Register" [ref=e11] [cursor=pointer]:
-            - /url: register.html
-  - generic [ref=e12]:
-    - heading "🎬 Login" [level=1] [ref=e14]
-    - generic [ref=e15]:
-      - heading "Demo Credentials:" [level=4] [ref=e16]
-      - paragraph [ref=e17]:
-        - strong [ref=e18]: "Admin:"
-        - text: admin@example.com / admin123
-      - paragraph [ref=e19]:
-        - strong [ref=e20]: "User:"
-        - text: john@example.com / password123
-    - generic [ref=e21]:
-      - generic [ref=e22]:
-        - generic [ref=e23]: Email
-        - textbox "Email" [ref=e24]:
-          - /placeholder: Enter your email
-          - text: admin@example.com
-      - generic [ref=e25]:
-        - generic [ref=e26]: Password
-        - textbox "Password" [ref=e27]:
-          - /placeholder: Enter your password
-          - text: admin123
-      - button "Login" [active] [ref=e28] [cursor=pointer]
-    - generic [ref=e29]: "Login failed: could not prepare statement [[SQLITE_ERROR] SQL error or missing database (no such table: users)] [select u1_0.user_id,u1_0.created_at,u1_0.email,u1_0.first_name,u1_0.last_name,u1_0.password,u1_0.phone_number,u1_0.role,u1_0.updated_at from users u1_0 where u1_0.email=?]"
-    - generic [ref=e30]:
-      - text: Don't have an account?
-      - link "Register here" [ref=e31] [cursor=pointer]:
-        - /url: register.html
 ```
 
 # Test source
@@ -79,12 +29,12 @@ waiting for navigation to "http://localhost:8080/admin-dashboard.html" until "lo
   6   | 
   7   | // Login helper function
   8   | async function loginAsAdmin(page) {
-  9   |   await page.goto(`${BASE_URL}/login.html`);
+> 9   |   await page.goto(`${BASE_URL}/login.html`);
+      |              ^ Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:8080/login.html
   10  |   await page.fill('input[name="email"]', ADMIN_EMAIL);
   11  |   await page.fill('input[name="password"]', ADMIN_PASSWORD);
   12  |   await page.click('button[type="submit"]');
-> 13  |   await page.waitForURL(`${BASE_URL}/admin-dashboard.html`);
-      |              ^ Error: page.waitForURL: Test timeout of 30000ms exceeded.
+  13  |   await page.waitForURL(`${BASE_URL}/admin-dashboard.html`);
   14  | }
   15  | 
   16  | test.describe('Admin Dashboard Management Pages', () => {
@@ -181,8 +131,4 @@ waiting for navigation to "http://localhost:8080/admin-dashboard.html" until "lo
   107 | 
   108 |   // ============ MOVIE MANAGEMENT TESTS ============
   109 |   test('Movie Management page should load', async ({ page }) => {
-  110 |     await page.goto(`${BASE_URL}/movie-management.html`);
-  111 |     
-  112 |     await expect(page.locator('h1')).toContainText('Movie Management');
-  113 |     await expect(page.locator('text=Add New Movie')).toBeVisible();
 ```

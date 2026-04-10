@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - MovieTickets</title>
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='75' font-size='75'>🎬</text></svg>">
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .profile-container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 2rem;
+        }
+
+        .profile-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .profile-info {
+            flex: 1;
+        }
+
+        .profile-info h1 {
+            margin: 0 0 1rem 0;
+            font-size: 2.5rem;
+        }
+
+        .profile-info p {
+            margin: 0.5rem 0;
+            font-size: 1.1rem;
+        }
+
+        .profile-avatar {
+            font-size: 5rem;
+            margin-right: 2rem;
+        }
+
+        .profile-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .profile-section h2 {
+            color: var(--primary-color);
+            margin-top: 0;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 1rem;
+        }
+
+        .profile-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .profile-item {
+            padding: 1rem;
+            background: var(--light-color);
+            border-radius: 5px;
+        }
+
+        .profile-item label {
+            font-weight: 600;
+            color: var(--primary-color);
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .profile-item value {
+            font-size: 1.1rem;
+            color: var(--text-color);
+        }
+
+        .bookings-list {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+
+        .booking-card {
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            background: var(--light-color);
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .booking-info h3 {
+            margin: 0 0 0.5rem 0;
+            color: var(--primary-color);
+        }
+
+        .booking-info p {
+            margin: 0.25rem 0;
+            color: var(--text-color);
+        }
+
+        .booking-status {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            text-align: center;
+            min-width: 100px;
+        }
+
+        .booking-status.confirmed {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .booking-status.pending {
+            background-color: #ff9800;
+            color: white;
+        }
+
+        .booking-status.cancelled {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .edit-profile-btn {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .edit-profile-btn:hover {
+            background-color: #ff5252;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 2rem;
+            color: #999;
+        }
+
+        .empty-state-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo"><a href="index.html" class="nav-link">🎬 MovieTickets</a></div>
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="shows.html" class="nav-link">Shows</a></li>
+                <li id="userProfileNav" style="display:none;" class="nav-profile">
+                    <a href="#" class="nav-link" onclick="toggleProfileMenu(event)">
+                        <span id="userName">Profile</span> ▼
+                    </a>
+                    <div id="profileMenu" class="profile-menu" style="display:none;">
+                        <a href="user-profile.html" onclick="closeProfileMenu()">📋 My Profile</a>
+                        <a href="user-bookings.html" onclick="closeProfileMenu()">🎟️ My Bookings</a>
+                        <a href="#" onclick="logout(); return false;">🚪 Logout</a>
+                    </div>
+                </li>
+                <li id="adminProfileNav" style="display:none;" class="nav-profile">
+                    <a href="#" class="nav-link" onclick="toggleProfileMenu(event)">
+                        <span id="adminName">Admin</span> ▼
+                    </a>
+                    <div id="adminProfileMenu" class="profile-menu" style="display:none;">
+                        <a href="admin-dashboard.html" onclick="closeProfileMenu()">🎛️ Dashboard</a>
+                        <a href="user-profile.html" onclick="closeProfileMenu()">📋 My Profile</a>
+                        <a href="#" onclick="logout(); return false;">🚪 Logout</a>
+                    </div>
+                </li>
+                <li id="loginNav"><a href="login.html" class="nav-link">Login</a></li>
+                <li id="registerNav"><a href="register.html" class="nav-link">Register</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Profile Content -->
+    <div class="profile-container">
+        <div id="notAuthenticated" class="not-authenticated" style="display: none;">
+            <h2>⛔ Access Denied</h2>
+            <p>You need to be logged in to view your profile.</p>
+            <a href="login.html">Go to Login</a>
+        </div>
+
+        <div id="profileContent" style="display: none;">
+            <!-- Profile Header -->
+            <div class="profile-header">
+                <div class="profile-avatar">👤</div>
+                <div class="profile-info">
+                    <h1 id="profileName">User Name</h1>
+                    <p>📧 Email: <strong id="profileEmail">user@example.com</strong></p>
+                    <p>📱 Phone: <strong id="profilePhone">Not provided</strong></p>
+                    <p>🎯 Role: <strong id="profileRole">User</strong></p>
+                </div>
+            </div>
+
+            <!-- Personal Information -->
+            <div class="profile-section">
+                <h2>📋 Personal Information</h2>
+                <div class="profile-grid">
+                    <div class="profile-item">
+                        <label>First Name</label>
+                        <value id="firstName">-</value>
+                    </div>
+                    <div class="profile-item">
+                        <label>Last Name</label>
+                        <value id="lastName">-</value>
+                    </div>
+                    <div class="profile-item">
+                        <label>Email</label>
+                        <value id="email">-</value>
+                    </div>
+                    <div class="profile-item">
+                        <label>Phone Number</label>
+                        <value id="phone">-</value>
+                    </div>
+                    <div class="profile-item">
+                        <label>Member Since</label>
+                        <value id="memberSince">-</value>
+                    </div>
+                    <div class="profile-item">
+                        <label>Last Updated</label>
+                        <value id="lastUpdated">-</value>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Booked Tickets -->
+            <div class="profile-section">
+                <h2>🎟️ My Booked Tickets</h2>
+                <div id="bookingsList" class="bookings-list">
+                    <!-- Bookings will be loaded here -->
+                </div>
+                <div id="emptyBookings" class="empty-state" style="display: none;">
+                    <div class="empty-state-icon">🎬</div>
+                    <p>No bookings yet. <a href="shows.html">Browse shows and make your first booking!</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/api.js"></script>
+    <script>
+        // Profile menu toggle
+        function toggleProfileMenu(event) {
+            event.preventDefault();
+            const user = JSON.parse(localStorage.getItem('user'));
+            if (user && user.role === 'ADMIN') {
+                const menu = document.getElementById('adminProfileMenu');
+                menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+            } else if (user) {
+                const menu = document.getElementById('profileMenu');
+                menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+            }
+        }
+
+        function closeProfileMenu() {
+            document.getElementById('profileMenu').style.display = 'none';
+            document.getElementById('adminProfileMenu').style.display = 'none';
+        }
+
+        // Close menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.nav-profile')) {
+                closeProfileMenu();
+            }
+        });
+
+        function logout() {
+            localStorage.removeItem('user');
+            window.location.href = 'index.html';
+        }
+
+        // Load user profile
+        async function loadUserProfile() {
+            const user = JSON.parse(localStorage.getItem('user'));
+            
+            if (!user) {
+                document.getElementById('notAuthenticated').style.display = 'block';
+                document.getElementById('profileContent').style.display = 'none';
+                document.getElementById('loginNav').style.display = 'block';
+                document.getElementById('registerNav').style.display = 'block';
+                return;
+            }
+
+            // Update navigation
+            if (user.role === 'ADMIN') {
+                document.getElementById('adminProfileNav').style.display = 'block';
+                document.getElementById('adminName').textContent = `👤 ${user.firstName} ${user.lastName} (Admin)`;
+            } else {
+                document.getElementById('userProfileNav').style.display = 'block';
+                document.getElementById('userName').textContent = `👤 ${user.firstName} ${user.lastName}`;
+            }
+
+            document.getElementById('loginNav').style.display = 'none';
+            document.getElementById('registerNav').style.display = 'none';
+
+            // Display profile information
+            document.getElementById('profileContent').style.display = 'block';
+            document.getElementById('notAuthenticated').style.display = 'none';
+
+            document.getElementById('profileName').textContent = `${user.firstName} ${user.lastName}`;
+            document.getElementById('profileEmail').textContent = user.email;
+            document.getElementById('profilePhone').textContent = user.phoneNumber || 'Not provided';
+            document.getElementById('profileRole').textContent = user.role === 'ADMIN' ? 'Administrator' : 'Regular User';
+
+            // Set personal information
+            document.getElementById('firstName').textContent = user.firstName;
+            document.getElementById('lastName').textContent = user.lastName;
+            document.getElementById('email').textContent = user.email;
+            document.getElementById('phone').textContent = user.phoneNumber || 'Not provided';
+            document.getElementById('memberSince').textContent = new Date(user.createdAt).toLocaleDateString();
+            document.getElementById('lastUpdated').textContent = new Date(user.updatedAt).toLocaleDateString();
+
+            // Load user bookings
+            try {
+                const bookings = await API.getUserBookings(user.userId);
+                
+                if (bookings && bookings.length > 0) {
+                    const bookingsList = document.getElementById('bookingsList');
+                    bookingsList.innerHTML = '';
+                    
+                    for (const booking of bookings) {
+                        try {
+                            const show = await API.getShowById(booking.showId);
+                            const movie = await API.getMovieById(show.movieId);
+                            
+                            const statusClass = booking.bookingStatus?.toLowerCase() || 'pending';
+                            const statusText = booking.bookingStatus || 'Pending';
+                            
+                            const bookingCard = `
+                                <div class="booking-card">
+                                    <div class="booking-info">
+                                        <h3>${movie.title}</h3>
+                                        <p>📅 ${new Date(show.startTime).toLocaleDateString()}</p>
+                                        <p>🕐 ${new Date(show.startTime).toLocaleTimeString()}</p>
+                                        <p>💺 Seats: ${booking.seatNumbers || 'N/A'}</p>
+                                        <p>💵 Amount: $${booking.totalPrice}</p>
+                                    </div>
+                                    <div class="booking-status ${statusClass}">${statusText}</div>
+                                </div>
+                            `;
+                            bookingsList.innerHTML += bookingCard;
+                        } catch (error) {
+                            console.error('Error loading booking details:', error);
+                        }
+                    }
+                    document.getElementById('emptyBookings').style.display = 'none';
+                } else {
+                    document.getElementById('emptyBookings').style.display = 'block';
+                    document.getElementById('bookingsList').innerHTML = '';
+                }
+            } catch (error) {
+                console.error('Error loading bookings:', error);
+                document.getElementById('emptyBookings').style.display = 'block';
+                document.getElementById('bookingsList').innerHTML = '';
+            }
+        }
+
+        // Load profile on page load
+        document.addEventListener('DOMContentLoaded', loadUserProfile);
+    </script>
+</body>
+</html>
